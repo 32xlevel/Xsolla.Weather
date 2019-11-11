@@ -11,11 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="8dp"
+        tools:itemCount="1"
+        tools:listitem="@layout/date_item" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/weather_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp" />
 </LinearLayout>
