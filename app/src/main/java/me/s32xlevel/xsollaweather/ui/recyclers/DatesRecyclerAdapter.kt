@@ -10,7 +10,6 @@ import me.s32xlevel.xsollaweather.R
 
 // 10: Вс, 11: Пн, 12: Вт
 // LinkedHashMap, т.к. очень важен порядок следования элементов
-// TODO: По-умолчанию выделить
 class DatesRecyclerAdapter(private val daysOfWeekAndName: LinkedHashMap<Int, String>) :
     RecyclerView.Adapter<DatesRecyclerAdapter.DatesViewHolder>() {
 

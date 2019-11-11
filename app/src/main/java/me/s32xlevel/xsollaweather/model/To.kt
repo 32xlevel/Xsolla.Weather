@@ -8,3 +8,9 @@ data class CityChoose(
     val tempMin: Double,
     val tempMax: Double
 )
+
+data class WeatherForDate(
+    val time: String,
+    val weatherImage: Bitmap,
+    val temp: Double
+)
