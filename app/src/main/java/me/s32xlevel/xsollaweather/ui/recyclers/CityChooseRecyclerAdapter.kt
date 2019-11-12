@@ -27,13 +27,15 @@ class CityChooseRecyclerAdapter(private val data: List<CityChoose>) :
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: CityMainViewHolder, position: Int) {
         val cityChoose = data[position]
-        holder.itemView.city_id.text = cityChoose.id.toString()
-        holder.itemView.city_name_tv.text = cityChoose.name
-        holder.itemView.weather_iv.setImageBitmap(cityChoose.weatherImage)
-        holder.itemView.weather_range_tv.text = "${cityChoose.tempMin}° .. ${cityChoose.tempMax}°"
+        with(holder.itemView) {
+            city_id.text = cityChoose.id.toString()
+            city_name_tv.text = cityChoose.name
+            weather_iv.setImageBitmap(cityChoose.weatherImage)
+            weather_range_tv.text = "${cityChoose.tempMin}° .. ${cityChoose.tempMax}°"
 
-        holder.itemView.setOnClickListener { onClickListener.invoke(it.city_name_tv.text.toString()) }
-        holder.itemView.setOnLongClickListener { onLongClickListener.invoke(); true }
+            setOnClickListener { onClickListener.invoke(it.city_name_tv.text.toString()) }
+            setOnLongClickListener { onLongClickListener.invoke(); true }
+        }
     }
 
     override fun getItemCount() = data.size

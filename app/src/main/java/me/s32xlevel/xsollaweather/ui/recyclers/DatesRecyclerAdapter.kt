@@ -30,21 +30,23 @@ class DatesRecyclerAdapter(private val daysOfWeekAndName: LinkedHashMap<Int, Str
     override fun onBindViewHolder(holder: DatesViewHolder, position: Int) {
         val day =
             (daysOfWeekAndName.keys.toIntArray()[position] to daysOfWeekAndName.values.toTypedArray()[position])
-        holder.itemView.day_number_tv.text = day.first.toString()
-        holder.itemView.day_name_tv.text = day.second
+        with(holder.itemView) {
+            day_number_tv.text = day.first.toString()
+            day_name_tv.text = day.second
 
-        if (day.first == selectedDay.first && day.second == selectedDay.second) {
-            holder.itemView.day_number_tv.setBackgroundResource(R.drawable.date_oval_background)
-            holder.itemView.day_number_tv.setTextColor(Color.WHITE)
-        } else {
-            holder.itemView.day_number_tv.setBackgroundResource(R.drawable.empty_background)
-            holder.itemView.day_number_tv.setTextColor(Color.BLACK)
-        }
+            if (day.first == selectedDay.first && day.second == selectedDay.second) {
+                day_number_tv.setBackgroundResource(R.drawable.date_oval_background)
+                day_number_tv.setTextColor(Color.WHITE)
+            } else {
+                day_number_tv.setBackgroundResource(R.drawable.empty_background)
+                day_number_tv.setTextColor(Color.BLACK)
+            }
 
-        holder.itemView.setOnClickListener {
-            selectedDay = day
-            onClickListener.invoke(day)
-            notifyDataSetChanged()
+            setOnClickListener {
+                selectedDay = day
+                onClickListener.invoke(day)
+                notifyDataSetChanged()
+            }
         }
     }
 

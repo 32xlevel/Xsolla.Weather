@@ -37,15 +37,19 @@ class CityDetailFragment : Fragment(R.layout.fragment_city_detail) {
     }
 
     private fun configureToolbar() {
-        (activity as AppCompatActivity).supportActionBar?.title = arguments?.getString(CITY_ARGUMENT)
-        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        with((activity as AppCompatActivity).supportActionBar!!) {
+            title = arguments?.getString(CITY_ARGUMENT)
+            setDisplayHomeAsUpEnabled(true) // TODO В зависимости от того был ли при первом заходе выбран
+        }
         setHasOptionsMenu(true)
     }
 
     private fun configureRecyclerForDates() {
-        val adapter = DatesRecyclerAdapter(linkedMapOf(11 to "Пн", 12 to "Вт", 13 to "Ср", 14 to "Чт"))
-        adapter.setOnDateClickListener { (dayNumber, dayName) -> }
-        dates_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        dates_rv.adapter = adapter
+        with(dates_rv) {
+            dates_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            dates_rv.adapter = DatesRecyclerAdapter(linkedMapOf(11 to "Пн", 12 to "Вт", 13 to "Ср", 14 to "Чт")).apply {
+                setOnDateClickListener { (dayNumber, dayName) -> }
+            }
+        }
     }
 }

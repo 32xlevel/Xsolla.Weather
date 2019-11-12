@@ -15,6 +15,7 @@ class App : Application() {
         fun getInstance() = instance as App
     }
 
+    // TODO onCreate Refactor
     override fun onCreate() {
         super.onCreate()
         instance = this

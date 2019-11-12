@@ -45,8 +45,10 @@ class CityChooseFragment : Fragment(R.layout.fragment_city_choose) {
     }
 
     private fun configureToolbar() {
-        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.app_name)
-        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        with((activity as AppCompatActivity).supportActionBar!!) {
+            title = getString(R.string.app_name)
+            setDisplayHomeAsUpEnabled(false) // TODO: В зависимости от того на каком экране
+        }
         setHasOptionsMenu(true)
     }
 
@@ -57,17 +59,18 @@ class CityChooseFragment : Fragment(R.layout.fragment_city_choose) {
                 .enqueue(asyncCall(
                     onSuccess = { weatherResponse ->
                         val weather = weatherResponse.body() ?: return@asyncCall
-                        val tempMin = (weather.list[0].main.tempMin - 273).toInt()
-                        val tempMax = (weather.list[0].main.tempMax - 273).toInt()
-                        val icon = WeatherUtil.getWeatherImageResourceFromDescription(weather.list[0].weatherDescriptions[0].description) ?: return@asyncCall
-                        val cityChoose = CityChoose(
-                            city.id,
-                            city.name,
-                            BitmapFactory.decodeResource(resources, icon),
-                            tempMin,
-                            tempMax
+                        val iconRes =
+                            WeatherUtil.getWeatherImageResourceFromDescription(weather.list[0].weatherDescriptions[0].description)
+                                ?: return@asyncCall
+                        cities.add(
+                            CityChoose(
+                                id = city.id,
+                                name = city.name,
+                                weatherImage = BitmapFactory.decodeResource(resources, iconRes),
+                                tempMin = (weather.list[0].main.tempMin - 273).toInt(),
+                                tempMax = (weather.list[0].main.tempMax - 273).toInt()
+                            )
                         )
-                        cities.add(cityChoose)
                     },
                     onBadRequest = {}
                 ))
@@ -75,11 +78,14 @@ class CityChooseFragment : Fragment(R.layout.fragment_city_choose) {
     }
 
     private fun configureRecycler() {
-        val adapter = CityChooseRecyclerAdapter(cities)
-        adapter.setOnCityClickListener { activity?.changeFragment(CityDetailFragment.newInstance(it)) }
-        cities_rv.layoutManager = GridLayoutManager(context, 2)
-        cities_rv.addItemDecoration(GridSpacesItemDecoration(8))
-        cities_rv.adapter = adapter
-        cities_rv.requestLayout()
+        with(cities_rv) {
+            layoutManager = GridLayoutManager(context, 2)
+            addItemDecoration(GridSpacesItemDecoration(8))
+            adapter = CityChooseRecyclerAdapter(cities).apply {
+                setOnCityClickListener {
+                    activity?.changeFragment(CityDetailFragment.newInstance(it))
+                }
+            }
+        }
     }
 }
