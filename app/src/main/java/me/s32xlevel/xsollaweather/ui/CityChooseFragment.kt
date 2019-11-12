@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -29,6 +30,8 @@ class CityChooseFragment : Fragment(R.layout.fragment_city_choose) {
 
     private val cityRepository by lazy { App.getInstance().getDatabase().cityRepository() }
 
+    private val recyclerAdapter = CityChooseRecyclerAdapter(cities)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initData()
@@ -42,6 +45,20 @@ class CityChooseFragment : Fragment(R.layout.fragment_city_choose) {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.city_choose_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                activity?.supportFragmentManager?.popBackStack()
+                return true
+            }
+            R.id.app_bar_add -> {
+                activity?.changeFragment(AddCityFragment())
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun configureToolbar() {
@@ -71,6 +88,7 @@ class CityChooseFragment : Fragment(R.layout.fragment_city_choose) {
                                 tempMax = (weather.list[0].main.tempMax - 273).toInt()
                             )
                         )
+                        recyclerAdapter.notifyDataSetChanged()
                     },
                     onBadRequest = {}
                 ))
@@ -81,7 +99,7 @@ class CityChooseFragment : Fragment(R.layout.fragment_city_choose) {
         with(cities_rv) {
             layoutManager = GridLayoutManager(context, 2)
             addItemDecoration(GridSpacesItemDecoration(8))
-            adapter = CityChooseRecyclerAdapter(cities).apply {
+            adapter = recyclerAdapter.apply {
                 setOnCityClickListener {
                     activity?.changeFragment(CityDetailFragment.newInstance(it))
                 }

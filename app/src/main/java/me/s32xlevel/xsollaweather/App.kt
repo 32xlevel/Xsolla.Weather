@@ -33,6 +33,16 @@ class App : Application() {
                         put("name", "Пермь")
                         put("is_saved", true)
                     })
+                    db.insert("cities", SQLiteDatabase.CONFLICT_NONE, ContentValues().apply {
+                        put("id", 498817)
+                        put("name", "Санкт-Петербург")
+                        put("is_saved", false)
+                    })
+                    db.insert("cities", SQLiteDatabase.CONFLICT_NONE, ContentValues().apply {
+                        put("id", 1496745)
+                        put("name", "Новосибирск")
+                        put("is_saved", false)
+                    })
                 }
             })
             .allowMainThreadQueries()
