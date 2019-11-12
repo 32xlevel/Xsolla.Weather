@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -102,6 +103,19 @@ class CityChooseFragment : Fragment(R.layout.fragment_city_choose) {
             adapter = recyclerAdapter.apply {
                 setOnCityClickListener {
                     activity?.changeFragment(CityDetailFragment.newInstance(it))
+                }
+                setOnCityLongClickListener {
+                    AlertDialog.Builder(context)
+                        .setTitle("Удалить город?")
+                        .setPositiveButton("Да") { dialog, which ->
+                            cityRepository.delete(it.id)
+                            cities.remove(it)
+                            notifyDataSetChanged()
+                        }
+                        .setNegativeButton("Нет") { dialog, which ->
+                            dialog.dismiss()
+                        }
+                        .show()
                 }
             }
         }

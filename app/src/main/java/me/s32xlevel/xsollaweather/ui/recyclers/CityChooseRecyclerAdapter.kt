@@ -13,7 +13,7 @@ class CityChooseRecyclerAdapter(private val data: List<CityChoose>) :
     RecyclerView.Adapter<CityChooseRecyclerAdapter.CityMainViewHolder>() {
 
     private var onClickListener: (cityName: String) -> Unit = {}
-    private var onLongClickListener: () -> Unit = {}
+    private var onLongClickListener: (city: CityChoose) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         CityMainViewHolder(
@@ -34,7 +34,7 @@ class CityChooseRecyclerAdapter(private val data: List<CityChoose>) :
             weather_range_tv.text = "${cityChoose.tempMin}° .. ${cityChoose.tempMax}°"
 
             setOnClickListener { onClickListener.invoke(it.city_name_tv.text.toString()) }
-            setOnLongClickListener { onLongClickListener.invoke(); true }
+            setOnLongClickListener { onLongClickListener.invoke(cityChoose); true }
         }
     }
 
@@ -46,7 +46,7 @@ class CityChooseRecyclerAdapter(private val data: List<CityChoose>) :
         this.onClickListener = onClickListener
     }
 
-    fun setOnCityLongClickListener(onLongClickListener: () -> Unit) {
+    fun setOnCityLongClickListener(onLongClickListener: (city: CityChoose) -> Unit) {
         this.onLongClickListener = onLongClickListener
     }
 }
