@@ -19,6 +19,8 @@ import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
 
 class AddCityFragment : Fragment(R.layout.fragment_add_city) {
 
+    private val cityRepository by lazy { App.getInstance().getDatabase().cityRepository() }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         configureToolbar()
@@ -49,13 +51,14 @@ class AddCityFragment : Fragment(R.layout.fragment_add_city) {
             adapter = AddCityRecyclerAdapter().apply {
                 setOnClickListener { cityId, cityName ->
                     activity?.changeFragment(CityDetailFragment.newInstance(cityName))
+                    cityRepository.save(cityId)
                 }
             }
         }
     }
 }
 
-class AddCityRecyclerAdapter() : RecyclerView.Adapter<AddCityRecyclerAdapter.ViewHolder>() {
+class AddCityRecyclerAdapter : RecyclerView.Adapter<AddCityRecyclerAdapter.ViewHolder>() {
     private val cityRepository = App.getInstance().getDatabase().cityRepository()
     private val data = cityRepository.getAllNotSaved()
 

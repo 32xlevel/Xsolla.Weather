@@ -23,6 +23,6 @@ interface CityRepository {
     @Query("DELETE FROM cities WHERE id = :id")
     fun delete(id: Int)
 
-    @Insert
-    fun save(city: CityEntity)
+    @Query("UPDATE cities SET is_saved = 1 WHERE id = :cityId")
+    fun save(cityId: Int)
 }

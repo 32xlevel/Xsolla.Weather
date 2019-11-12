@@ -11,6 +11,7 @@ object WeatherUtil {
             weatherDescription.contains("storm", ignoreCase = true) -> R.drawable.storm
             weatherDescription.contains("sun", ignoreCase = true) -> R.drawable.sun
             weatherDescription.contains("wind", ignoreCase = true) -> R.drawable.windy
+            weatherDescription.contains("sky", ignoreCase = true) -> R.drawable.sun // TODO
             else -> null
         }
     }
