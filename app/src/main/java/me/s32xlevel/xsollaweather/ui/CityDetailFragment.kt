@@ -6,11 +6,15 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_city_detail.*
 import me.s32xlevel.xsollaweather.App
 import me.s32xlevel.xsollaweather.R
+import me.s32xlevel.xsollaweather.model.WeatherEntity
+import me.s32xlevel.xsollaweather.ui.recyclers.CustomLinearDividerItemDecoration
 import me.s32xlevel.xsollaweather.ui.recyclers.DatesRecyclerAdapter
+import me.s32xlevel.xsollaweather.ui.recyclers.WeatherRecyclerAdapter
 import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
 
 class CityDetailFragment : Fragment(R.layout.fragment_city_detail) {
@@ -32,9 +36,12 @@ class CityDetailFragment : Fragment(R.layout.fragment_city_detail) {
     private val currentCityId: Int by lazy { requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
         .getInt("SavedCity", -1) }
 
+    private val selectedDay: String by lazy { weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         configureToolbar()
         configureRecyclerForDates()
+        configureRecyclerForWeather()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -62,5 +69,26 @@ class CityDetailFragment : Fragment(R.layout.fragment_city_detail) {
                 setOnDateClickListener { (dayNumber, dayName) -> }
             }
         }
+    }
+
+    private fun configureRecyclerForWeather() {
+        weather_rv.layoutManager = LinearLayoutManager(context)
+        weather_rv.addItemDecoration(CustomLinearDividerItemDecoration(drawBeforeFirst = true, drawAfterLast = true))
+        weather_rv.adapter = WeatherRecyclerAdapter(getWeatherByCurrentDate())
+    }
+
+    private fun getWeatherByCurrentDate(): List<WeatherEntity> {
+        val weatherList = weatherRepository.findAllByCityId(currentCityId).weathers
+        val date = selectedDay.split(" ")[0]
+
+        val list = mutableListOf<WeatherEntity>()
+
+        for (weatherEntity in weatherList) {
+            if (weatherEntity.dateTxt.contains(date)) {
+                list.add(weatherEntity)
+            }
+        }
+
+        return list
     }
 }

@@ -9,7 +9,7 @@ import me.s32xlevel.xsollaweather.model.WeatherEntity
 @Dao
 interface WeatherRepository {
     @Query("SELECT * FROM cities WHERE id = :cityId")
-    fun findAllByCityId(cityId: Int): List<CityWithWeather>
+    fun findAllByCityId(cityId: Int): CityWithWeather
 
     @Query("DELETE FROM weather")
     fun clear()
