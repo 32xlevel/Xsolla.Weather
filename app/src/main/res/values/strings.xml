@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name">Xsolla.Weather</string>
+    <string name="app_name">Weather</string>
 
     <string name="snackbar_exit_text">Нажмите еще раз, чтобы выйти</string>
     <string name="search_hint_menu">Поиск города</string>
     <string name="update_hint_menu">Обновить данные</string>
+    <string name="network_error">Чтобы получить актуальные данные, проверьте подключение к интернету</string>
 </resources>
