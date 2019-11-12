@@ -55,7 +55,11 @@ class CityChooseFragment : Fragment(R.layout.fragment_city_choose) {
                 return true
             }
             R.id.app_bar_add -> {
-                activity?.changeFragment(AddCityFragment())
+                activity?.changeFragment(AddCityFragment.newInstance())
+                return true
+            }
+            R.id.app_bar_update -> {
+                activity?.changeFragment(newInstance(), cleanStack = true)
                 return true
             }
         }

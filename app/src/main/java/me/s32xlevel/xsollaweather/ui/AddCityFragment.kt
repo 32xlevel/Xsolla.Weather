@@ -19,6 +19,10 @@ import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
 
 class AddCityFragment : Fragment(R.layout.fragment_add_city) {
 
+    companion object {
+        fun newInstance() = AddCityFragment()
+    }
+
     private val cityRepository by lazy { App.getInstance().getDatabase().cityRepository() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
