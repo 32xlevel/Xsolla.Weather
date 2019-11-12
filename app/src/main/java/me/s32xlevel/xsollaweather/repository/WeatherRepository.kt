@@ -1,14 +1,19 @@
 package me.s32xlevel.xsollaweather.repository
 
-import me.s32xlevel.xsollaweather.model.Weather
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+import me.s32xlevel.xsollaweather.model.CityWithWeather
+import me.s32xlevel.xsollaweather.model.WeatherEntity
 
+@Dao
 interface WeatherRepository {
-    fun getActual(cityName: String)
+    @Query("SELECT * FROM cities WHERE id = :cityId")
+    fun findAllByCityId(cityId: Int): List<CityWithWeather>
 
-    fun getCached(cityName: String)
+    @Query("DELETE FROM weather")
+    fun clear()
 
-    fun clearCache()
-
-    fun cacheData(weather: Weather)
-
+    @Insert
+    fun save(weather: WeatherEntity)
 }

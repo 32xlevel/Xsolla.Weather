@@ -1,8 +1,7 @@
 package me.s32xlevel.xsollaweather.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
+import java.util.*
 
 @Entity(tableName = "cities")
 data class CityEntity(
@@ -14,3 +13,28 @@ data class CityEntity(
     @ColumnInfo(name = "is_saved")
     val isSaved: Boolean = false
 )
+
+@Entity(tableName = "weather", foreignKeys = [
+    ForeignKey(entity = CityEntity::class, parentColumns = ["id"], childColumns = ["city_id"], onDelete = ForeignKey.CASCADE)
+])
+data class WeatherEntity(
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    val id: String,
+    @ColumnInfo(name = "city_id")
+    val cityId: Int,
+    @ColumnInfo(name = "date_txt")
+    val dateTxt: String,
+    @ColumnInfo(name = "temp")
+    val temp: Double,
+    @ColumnInfo(name = "description")
+    val description: String
+)
+
+class CityWithWeather() {
+    @Embedded
+    lateinit var city: CityEntity
+
+    @Relation(parentColumn = "id", entityColumn = "city_id", entity = WeatherEntity::class)
+    lateinit var weathers: List<WeatherEntity>
+}

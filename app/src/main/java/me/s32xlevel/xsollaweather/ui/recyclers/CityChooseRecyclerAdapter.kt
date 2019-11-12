@@ -12,7 +12,7 @@ import me.s32xlevel.xsollaweather.model.CityChoose
 class CityChooseRecyclerAdapter(private val data: List<CityChoose>) :
     RecyclerView.Adapter<CityChooseRecyclerAdapter.CityMainViewHolder>() {
 
-    private var onClickListener: (cityName: String) -> Unit = {}
+    private var onClickListener: (cityId: Int) -> Unit = {}
     private var onLongClickListener: (city: CityChoose) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -33,7 +33,7 @@ class CityChooseRecyclerAdapter(private val data: List<CityChoose>) :
             weather_iv.setImageBitmap(cityChoose.weatherImage)
             weather_range_tv.text = "${cityChoose.tempMin}° .. ${cityChoose.tempMax}°"
 
-            setOnClickListener { onClickListener.invoke(it.city_name_tv.text.toString()) }
+            setOnClickListener { onClickListener.invoke(cityChoose.id) }
             setOnLongClickListener { onLongClickListener.invoke(cityChoose); true }
         }
     }
@@ -42,7 +42,7 @@ class CityChooseRecyclerAdapter(private val data: List<CityChoose>) :
 
     class CityMainViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
-    fun setOnCityClickListener(onClickListener: (cityName: String) -> Unit) {
+    fun setOnCityClickListener(onClickListener: (cityId: Int) -> Unit) {
         this.onClickListener = onClickListener
     }
 

@@ -1,7 +1,9 @@
 package me.s32xlevel.xsollaweather.ui
 
+import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -14,12 +16,15 @@ import kotlinx.android.synthetic.main.fragment_city_choose.*
 import me.s32xlevel.xsollaweather.App
 import me.s32xlevel.xsollaweather.R
 import me.s32xlevel.xsollaweather.model.CityChoose
+import me.s32xlevel.xsollaweather.model.Weather
+import me.s32xlevel.xsollaweather.model.WeatherEntity
 import me.s32xlevel.xsollaweather.network.api
 import me.s32xlevel.xsollaweather.network.asyncCall
 import me.s32xlevel.xsollaweather.ui.recyclers.CityChooseRecyclerAdapter
 import me.s32xlevel.xsollaweather.ui.recyclers.GridSpacesItemDecoration
 import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
 import me.s32xlevel.xsollaweather.util.WeatherUtil
+import java.util.*
 
 class CityChooseFragment : Fragment(R.layout.fragment_city_choose) {
 
@@ -30,6 +35,8 @@ class CityChooseFragment : Fragment(R.layout.fragment_city_choose) {
     private val cities = arrayListOf<CityChoose>()
 
     private val cityRepository by lazy { App.getInstance().getDatabase().cityRepository() }
+
+    private val weatherRepository by lazy { App.getInstance().getDatabase().weatherRepository() }
 
     private val recyclerAdapter = CityChooseRecyclerAdapter(cities)
 
@@ -80,6 +87,11 @@ class CityChooseFragment : Fragment(R.layout.fragment_city_choose) {
             api.getForecast5day3hours(city.id)
                 .enqueue(asyncCall(
                     onSuccess = { weatherResponse ->
+                        requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
+                            .edit()
+                            .putLong("LastNetworkConnect", System.currentTimeMillis())
+                            .apply()
+
                         val weather = weatherResponse.body() ?: return@asyncCall
                         val iconRes =
                             WeatherUtil.getWeatherImageResourceFromDescription(weather.list[0].weatherDescriptions[0].description)
@@ -93,6 +105,7 @@ class CityChooseFragment : Fragment(R.layout.fragment_city_choose) {
                                 tempMax = (weather.list[0].main.tempMax - 273).toInt()
                             )
                         )
+                        saveWeatherToDb(weather)
                         recyclerAdapter.notifyDataSetChanged()
                     },
                     onBadRequest = {}
@@ -105,8 +118,12 @@ class CityChooseFragment : Fragment(R.layout.fragment_city_choose) {
             layoutManager = GridLayoutManager(context, 2)
             addItemDecoration(GridSpacesItemDecoration(8))
             adapter = recyclerAdapter.apply {
-                setOnCityClickListener {
-                    activity?.changeFragment(CityDetailFragment.newInstance(it))
+                setOnCityClickListener { cityId ->
+                    requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
+                        .edit()
+                        .putInt("SavedCity", cityId)
+                        .apply()
+                    activity?.changeFragment(CityDetailFragment.newInstance())
                 }
                 setOnCityLongClickListener {
                     AlertDialog.Builder(context)
@@ -122,6 +139,18 @@ class CityChooseFragment : Fragment(R.layout.fragment_city_choose) {
                         .show()
                 }
             }
+        }
+    }
+
+    private fun saveWeatherToDb(pojoWeather: Weather) {
+        val cityId = pojoWeather.city.id
+        pojoWeather.list.forEachIndexed { index, weatherListItem ->
+            val description = weatherListItem.weatherDescriptions[0].description
+            val dateTxt = weatherListItem.dtTxt
+            val temp = weatherListItem.main.temp
+            val weatherEntity = WeatherEntity(cityId = cityId, description = description, dateTxt = dateTxt, temp = temp, id = UUID.randomUUID().toString())
+            weatherRepository.save(weatherEntity)
+            Log.d("CityChooseFragment", "saveWeatherToDb: $weatherEntity")
         }
     }
 }

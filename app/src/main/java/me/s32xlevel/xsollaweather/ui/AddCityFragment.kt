@@ -54,7 +54,7 @@ class AddCityFragment : Fragment(R.layout.fragment_add_city) {
             addItemDecoration(DividerItemDecoration(context, RecyclerView.VERTICAL))
             adapter = AddCityRecyclerAdapter().apply {
                 setOnClickListener { cityId, cityName ->
-                    activity?.changeFragment(CityDetailFragment.newInstance(cityName))
+                    activity?.changeFragment(CityDetailFragment.newInstance()) // TODO: Префы.
                     cityRepository.save(cityId)
                 }
             }
