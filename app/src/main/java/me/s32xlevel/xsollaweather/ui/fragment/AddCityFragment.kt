@@ -1,4 +1,4 @@
-package me.s32xlevel.xsollaweather.ui
+package me.s32xlevel.xsollaweather.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,7 +14,6 @@ import kotlinx.android.synthetic.main.fragment_add_city.*
 import me.s32xlevel.xsollaweather.App
 
 import me.s32xlevel.xsollaweather.R
-import me.s32xlevel.xsollaweather.repository.CityRepository
 import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
 
 class AddCityFragment : Fragment(R.layout.fragment_add_city) {

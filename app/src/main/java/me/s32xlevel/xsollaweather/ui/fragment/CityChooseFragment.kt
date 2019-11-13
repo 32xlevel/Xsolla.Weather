@@ -1,4 +1,4 @@
-package me.s32xlevel.xsollaweather.ui
+package me.s32xlevel.xsollaweather.ui.fragment
 
 import android.content.Context
 import android.graphics.BitmapFactory

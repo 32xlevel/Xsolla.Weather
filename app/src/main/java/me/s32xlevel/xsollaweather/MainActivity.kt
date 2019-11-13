@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import me.s32xlevel.xsollaweather.ui.CityChooseFragment
+import me.s32xlevel.xsollaweather.ui.fragment.CityChooseFragment
 import me.s32xlevel.xsollaweather.util.ExitManager.onExitInitiative
 import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
 

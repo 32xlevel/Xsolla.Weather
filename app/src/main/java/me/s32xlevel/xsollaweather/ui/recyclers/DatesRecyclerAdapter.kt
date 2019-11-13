@@ -7,16 +7,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.date_item.view.*
 import me.s32xlevel.xsollaweather.R
+import java.text.SimpleDateFormat
+import java.util.*
 
 // 10: Вс, 11: Пн, 12: Вт
-// LinkedHashMap, т.к. очень важен порядок следования элементов
-class DatesRecyclerAdapter(private val daysOfWeekAndName: LinkedHashMap<Int, String>) :
+class DatesRecyclerAdapter(private val dates: Set<String>) :
     RecyclerView.Adapter<DatesRecyclerAdapter.DatesViewHolder>() {
 
-    private var selectedDay
-            = (daysOfWeekAndName.keys.toIntArray()[0] to daysOfWeekAndName.values.toTypedArray()[0])
+    private var selectedDay = dates.elementAt(0)
 
-    private var onClickListener: (Pair<Int, String>) -> Unit = {}
+    private lateinit var onClickListener: (date: String) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         DatesViewHolder(
@@ -28,13 +28,15 @@ class DatesRecyclerAdapter(private val daysOfWeekAndName: LinkedHashMap<Int, Str
         )
 
     override fun onBindViewHolder(holder: DatesViewHolder, position: Int) {
-        val day =
-            (daysOfWeekAndName.keys.toIntArray()[position] to daysOfWeekAndName.values.toTypedArray()[position])
-        with(holder.itemView) {
-            day_number_tv.text = day.first.toString()
-            day_name_tv.text = day.second
+        val fullDate = dates.elementAt(position)
+        val numOfMonth = fullDate.split("-")[2]
+        val dayOfWeek = getDayOfWeek(fullDate)
 
-            if (day.first == selectedDay.first && day.second == selectedDay.second) {
+        with(holder.itemView) {
+            day_number_tv.text = numOfMonth
+            day_name_tv.text = dayOfWeek
+
+            if (fullDate == selectedDay) {
                 day_number_tv.setBackgroundResource(R.drawable.date_oval_background)
                 day_number_tv.setTextColor(Color.WHITE)
             } else {
@@ -43,18 +45,39 @@ class DatesRecyclerAdapter(private val daysOfWeekAndName: LinkedHashMap<Int, Str
             }
 
             setOnClickListener {
-                selectedDay = day
-                onClickListener.invoke(day)
+                selectedDay = fullDate
+                onClickListener.invoke(fullDate)
                 notifyDataSetChanged()
             }
         }
     }
 
-    override fun getItemCount() = daysOfWeekAndName.size
+    override fun getItemCount() = dates.size
 
     class DatesViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
-    fun setOnDateClickListener(onClickListener: (Pair<Int, String>) -> Unit) {
+    private fun getDayOfWeek(fullDate: String): String {
+        return when (getDayOfWeekInt(fullDate)) {
+            1 -> "Пн"
+            2 -> "Вт"
+            3 -> "Ср"
+            4 -> "Чт"
+            5 -> "Пт"
+            6 -> "Сб"
+            7 -> "Вс"
+            else -> throw IllegalStateException()
+        }
+    }
+
+    private fun getDayOfWeekInt(fullDate: String): Int {
+        val format1 = SimpleDateFormat("yyyy-MM-dd")
+        val dt1 = format1.parse(fullDate)
+        val calendar = Calendar.getInstance()
+        calendar.time = dt1
+        return calendar.get(Calendar.DAY_OF_WEEK)
+    }
+
+    fun setOnClickListener(onClickListener: (date: String) -> Unit) {
         this.onClickListener = onClickListener
     }
 }

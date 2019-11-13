@@ -1,4 +1,4 @@
-package me.s32xlevel.xsollaweather.ui
+package me.s32xlevel.xsollaweather.ui.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -6,7 +6,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_city_detail.*
 import me.s32xlevel.xsollaweather.App
@@ -30,15 +29,20 @@ class CityDetailFragment : Fragment(R.layout.fragment_city_detail) {
 
     private val weatherRepository by lazy { App.getInstance().getDatabase().weatherRepository() }
 
-    private val lastUpdate: Long by lazy { requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
-        .getLong("LastNetworkConnect", -1) }
+    private val lastUpdate: Long by lazy {
+        requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            .getLong("LastNetworkConnect", -1)
+    }
 
-    private val currentCityId: Int by lazy { requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
-        .getInt("SavedCity", -1) }
+    private val currentCityId: Int by lazy {
+        requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            .getInt("SavedCity", -1)
+    }
 
-    private val selectedDay: String by lazy { weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt }
+    private lateinit var selectedDay: String
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        selectedDay = weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt
         configureToolbar()
         configureRecyclerForDates()
         configureRecyclerForWeather()
@@ -63,17 +67,31 @@ class CityDetailFragment : Fragment(R.layout.fragment_city_detail) {
     }
 
     private fun configureRecyclerForDates() {
+        val weathers = weatherRepository.findAllByCityId(currentCityId).weathers
+        val set = mutableSetOf<String>()
+        for (weather in weathers) {
+            set.add(weather.dateTxt.split(" ")[0])
+        }
+
         with(dates_rv) {
-            dates_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            dates_rv.adapter = DatesRecyclerAdapter(linkedMapOf(11 to "Пн", 12 to "Вт", 13 to "Ср", 14 to "Чт")).apply {
-                setOnDateClickListener { (dayNumber, dayName) -> }
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = DatesRecyclerAdapter(set).apply {
+                setOnClickListener {
+                    selectedDay = it
+                    weather_rv.adapter = WeatherRecyclerAdapter(getWeatherByCurrentDate())
+                }
             }
         }
     }
 
     private fun configureRecyclerForWeather() {
         weather_rv.layoutManager = LinearLayoutManager(context)
-        weather_rv.addItemDecoration(CustomLinearDividerItemDecoration(drawBeforeFirst = true, drawAfterLast = true))
+        weather_rv.addItemDecoration(
+            CustomLinearDividerItemDecoration(
+                drawBeforeFirst = true,
+                drawAfterLast = true
+            )
+        )
         weather_rv.adapter = WeatherRecyclerAdapter(getWeatherByCurrentDate())
     }
 
