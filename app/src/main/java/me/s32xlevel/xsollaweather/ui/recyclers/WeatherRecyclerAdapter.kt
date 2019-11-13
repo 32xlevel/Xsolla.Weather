@@ -28,7 +28,7 @@ class WeatherRecyclerAdapter(private val weathers: List<WeatherEntity>) :
         with(holder.itemView) {
             weather_time.text = weathers[position].dateTxt.split(" ")[1]
             weather_image.setImageBitmap(BitmapFactory.decodeResource(resources,
-                WeatherUtil.getWeatherImageResourceFromDescription(weathers[position].description)!!))
+                WeatherUtil.getWeatherImageResourceFromDescription(weathers[position].description)))
             weather_temp.text = "${(weathers[position].temp - 273).toInt()}°"
         }
     }

@@ -7,10 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.date_item.view.*
 import me.s32xlevel.xsollaweather.R
-import java.text.SimpleDateFormat
-import java.util.*
+import me.s32xlevel.xsollaweather.util.WeatherUtil
 
-// 10: Вс, 11: Пн, 12: Вт
 class DatesRecyclerAdapter(private val dates: Set<String>) :
     RecyclerView.Adapter<DatesRecyclerAdapter.DatesViewHolder>() {
 
@@ -30,7 +28,7 @@ class DatesRecyclerAdapter(private val dates: Set<String>) :
     override fun onBindViewHolder(holder: DatesViewHolder, position: Int) {
         val fullDate = dates.elementAt(position)
         val numOfMonth = fullDate.split("-")[2]
-        val dayOfWeek = getDayOfWeek(fullDate)
+        val dayOfWeek = WeatherUtil.getDayOfWeek(fullDate)
 
         with(holder.itemView) {
             day_number_tv.text = numOfMonth
@@ -55,27 +53,6 @@ class DatesRecyclerAdapter(private val dates: Set<String>) :
     override fun getItemCount() = dates.size
 
     class DatesViewHolder(view: View) : RecyclerView.ViewHolder(view)
-
-    private fun getDayOfWeek(fullDate: String): String {
-        return when (getDayOfWeekInt(fullDate)) {
-            1 -> "Пн"
-            2 -> "Вт"
-            3 -> "Ср"
-            4 -> "Чт"
-            5 -> "Пт"
-            6 -> "Сб"
-            7 -> "Вс"
-            else -> throw IllegalStateException()
-        }
-    }
-
-    private fun getDayOfWeekInt(fullDate: String): Int {
-        val format1 = SimpleDateFormat("yyyy-MM-dd")
-        val dt1 = format1.parse(fullDate)
-        val calendar = Calendar.getInstance()
-        calendar.time = dt1
-        return calendar.get(Calendar.DAY_OF_WEEK)
-    }
 
     fun setOnClickListener(onClickListener: (date: String) -> Unit) {
         this.onClickListener = onClickListener

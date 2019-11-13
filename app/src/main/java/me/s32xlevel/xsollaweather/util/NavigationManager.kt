@@ -8,15 +8,14 @@ import me.s32xlevel.xsollaweather.R
 object NavigationManager {
     const val FRAGMENT_TAG = "FragmentTag"
 
-    // TODO: Добавить город, удалить из стэка этот фрагмент
-    fun FragmentActivity.changeFragment(fragment: Fragment, cleanStack: Boolean = false, addToBackStack: Boolean = true) {
+    fun FragmentActivity.changeFragment(fragment: Fragment, cleanStack: Boolean = false) {
         if (cleanStack) {
             clearBackStack()
         }
 
         with(supportFragmentManager.beginTransaction()) {
             replace(R.id.fragment_container, fragment, FRAGMENT_TAG)
-            if (addToBackStack) addToBackStack(null)
+            addToBackStack(null)
             commit()
         }
 

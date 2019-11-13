@@ -15,6 +15,9 @@ import me.s32xlevel.xsollaweather.ui.recyclers.CustomLinearDividerItemDecoration
 import me.s32xlevel.xsollaweather.ui.recyclers.DatesRecyclerAdapter
 import me.s32xlevel.xsollaweather.ui.recyclers.WeatherRecyclerAdapter
 import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
+import me.s32xlevel.xsollaweather.util.PreferencesManager
+import me.s32xlevel.xsollaweather.util.PreferencesManager.getIntFromPreferences
+import me.s32xlevel.xsollaweather.util.PreferencesManager.getLongFromPreferences
 
 class CityDetailFragment : Fragment(R.layout.fragment_city_detail) {
 
@@ -29,15 +32,9 @@ class CityDetailFragment : Fragment(R.layout.fragment_city_detail) {
 
     private val weatherRepository by lazy { App.getInstance().getDatabase().weatherRepository() }
 
-    private val lastUpdate: Long by lazy {
-        requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
-            .getLong("LastNetworkConnect", -1)
-    }
+    private val lastUpdate: Long by lazy { context?.getLongFromPreferences(PreferencesManager.LAST_NETWORK_CONNECT)!! }
 
-    private val currentCityId: Int by lazy {
-        requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
-            .getInt("SavedCity", -1)
-    }
+    private val currentCityId: Int by lazy { context?.getIntFromPreferences(PreferencesManager.SAVED_CITY)!! }
 
     private lateinit var selectedDay: String
 
