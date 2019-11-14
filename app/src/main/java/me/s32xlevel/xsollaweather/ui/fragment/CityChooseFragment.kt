@@ -14,8 +14,6 @@ import kotlinx.android.synthetic.main.error_banner.*
 import kotlinx.android.synthetic.main.fragment_city_choose.*
 import me.s32xlevel.xsollaweather.R
 import me.s32xlevel.xsollaweather.business.model.CityChoose
-import me.s32xlevel.xsollaweather.business.model.Weather
-import me.s32xlevel.xsollaweather.business.model.WeatherEntity
 import me.s32xlevel.xsollaweather.business.network.api
 import me.s32xlevel.xsollaweather.business.network.asyncCall
 import me.s32xlevel.xsollaweather.ui.recyclers.CityChooseRecyclerAdapter
@@ -25,7 +23,6 @@ import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.setToPreferences
 import me.s32xlevel.xsollaweather.util.WeatherUtil
-import java.util.*
 
 class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
 
@@ -68,6 +65,7 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
 
     // TODO если пустой список городов, то надо особо обрабатывать
     // TODO: new city -> обратно на экран выбора -> одни и те же данные
+    // TODO: onFailure -> если есть кэш то его, иначе показ баннера
     private fun initData() {
         val savedCities = cityRepository.getAllSaved()
         if (weatherRepository.findAllByCityId(savedCities[0].id).weathers.isNotEmpty()) {

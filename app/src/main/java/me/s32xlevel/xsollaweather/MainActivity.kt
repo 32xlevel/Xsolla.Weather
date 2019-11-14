@@ -8,7 +8,6 @@ import android.os.Handler
 import kotlinx.android.synthetic.main.activity_main.*
 import me.s32xlevel.xsollaweather.ui.fragment.CityChooseFragment
 import me.s32xlevel.xsollaweather.ui.fragment.CityDetailFragment
-import me.s32xlevel.xsollaweather.util.ExitManager.onExitInitiative
 import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.getIntFromPreferences
@@ -43,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         if (supportFragmentManager.backStackEntryCount > 1) {
             supportFragmentManager.popBackStack()
         } else {
-            onExitInitiative()
+            finish()
         }
     }
 }

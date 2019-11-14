@@ -20,7 +20,6 @@ import me.s32xlevel.xsollaweather.util.DbUtils
 import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.getIntFromPreferences
-import me.s32xlevel.xsollaweather.util.PreferencesManager.getLongFromPreferences
 
 class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail) {
 
@@ -29,8 +28,6 @@ class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail) {
             return CityDetailFragment()
         }
     }
-
-    private val lastUpdate: Long by lazy { context?.getLongFromPreferences(PreferencesManager.LAST_NETWORK_CONNECT)!! }
 
     private val currentCityId: Int by lazy { context?.getIntFromPreferences(PreferencesManager.SAVED_CITY)!! }
 
@@ -49,7 +46,7 @@ class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail) {
                         configureRecyclerForDates()
                         configureRecyclerForWeather()
                     },
-                    onFailure = {
+                    onFailure = { // TODO: onFailure -> если есть кэш то его, иначе показ баннера
                         with(activity!!) {
                             error_banner.visibility = View.VISIBLE
                             error_banner.animate().setDuration(400).alpha(1f)
