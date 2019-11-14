@@ -32,11 +32,15 @@ val api: WeatherApi by lazy {
         .create(WeatherApi::class.java)
 }
 
-fun <T> Fragment.asyncCall(onSuccess: (response: Response<T>) -> Unit) = CallbackImpl(this, onSuccess)
+fun <T> Fragment.asyncCall(
+    onSuccess: (response: Response<T>) -> Unit,
+    onFailure: () -> Unit
+) = CallbackImpl(this, onSuccess, onFailure)
 
 class CallbackImpl<T>(
     private val fragment: Fragment,
-    private val onSuccess: (response: Response<T>) -> Unit
+    private val onSuccess: (response: Response<T>) -> Unit,
+    private val onFailure: () -> Unit
 ) : Callback<T> {
 
     override fun onResponse(call: Call<T>, response: Response<T>) {
@@ -50,5 +54,6 @@ class CallbackImpl<T>(
 
     override fun onFailure(call: Call<T>, t: Throwable) {
         fragment.showToast(R.string.network_error)
+        onFailure.invoke()
     }
 }

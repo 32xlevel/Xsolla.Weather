@@ -6,6 +6,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.error_banner.*
 import kotlinx.android.synthetic.main.fragment_city_detail.*
 import me.s32xlevel.xsollaweather.R
 import me.s32xlevel.xsollaweather.business.model.WeatherEntity
@@ -23,7 +25,6 @@ import me.s32xlevel.xsollaweather.util.PreferencesManager.getLongFromPreferences
 class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail) {
 
     companion object {
-        // Префы + сравнение времени посл. обновления и текущего
         fun newInstance(): Fragment {
             return CityDetailFragment()
         }
@@ -35,20 +36,38 @@ class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail) {
 
     private lateinit var selectedDay: String
 
-    // TODO: !!!!Остановился здесь. Нужно нормально работать с сетью. Допилить offline mode
-    // TODO: !!!! + При заходе отображение лого, а также "о себе"
-    // Если не загрузилось на этом моменте сеть, знач ничего нет, значит показ ошибки
-    // Пустые списки для ресайклера
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        configureToolbar()
+
         val cityWeather = weatherRepository.findAllByCityId(currentCityId)
         if (cityWeather.weathers.isEmpty()) {
             api.getForecast5day3hours(currentCityId)
-                .enqueue(asyncCall { DbUtils.saveWeatherToDb(it.body()!!) })
+                .enqueue(asyncCall(
+                    onSuccess = {
+                        DbUtils.saveWeatherToDb(it.body()!!)
+                        selectedDay = weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt
+                        configureRecyclerForDates()
+                        configureRecyclerForWeather()
+                    },
+                    onFailure = {
+                        with(activity!!) {
+                            error_banner.visibility = View.VISIBLE
+                            error_banner.animate().setDuration(400).alpha(1f)
+                            (this as AppCompatActivity).supportActionBar?.hide()
+                            error_button.setOnClickListener {
+                                error_banner.animate().setDuration(400).alpha(0f)
+                                error_banner.visibility = View.GONE
+                                (this as AppCompatActivity).supportActionBar?.show()
+                                changeFragment(newInstance(), cleanStack = true)
+                            }
+                        }
+                    }
+                ))
+        } else {
+            selectedDay = weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt
+            configureRecyclerForDates()
+            configureRecyclerForWeather()
         }
-        selectedDay = weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt
-        configureToolbar()
-        configureRecyclerForDates()
-        configureRecyclerForWeather()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

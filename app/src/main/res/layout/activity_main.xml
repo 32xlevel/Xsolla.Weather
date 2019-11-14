@@ -14,4 +14,8 @@
         android:id="@+id/xsolla_screen"
         layout="@layout/xsolla_screen"/>
 
+    <include
+        android:id="@+id/error_banner"
+        layout="@layout/error_banner"/>
+
 </FrameLayout>
