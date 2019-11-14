@@ -1,9 +1,7 @@
 package me.s32xlevel.xsollaweather.ui.fragment
 
-import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -13,14 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.fragment_city_choose.*
 import me.s32xlevel.xsollaweather.R
-import me.s32xlevel.xsollaweather.model.CityChoose
-import me.s32xlevel.xsollaweather.model.Weather
-import me.s32xlevel.xsollaweather.model.WeatherEntity
-import me.s32xlevel.xsollaweather.network.api
-import me.s32xlevel.xsollaweather.network.asyncCall
+import me.s32xlevel.xsollaweather.business.model.CityChoose
+import me.s32xlevel.xsollaweather.business.model.Weather
+import me.s32xlevel.xsollaweather.business.model.WeatherEntity
+import me.s32xlevel.xsollaweather.business.network.api
+import me.s32xlevel.xsollaweather.business.network.asyncCall
 import me.s32xlevel.xsollaweather.ui.recyclers.CityChooseRecyclerAdapter
 import me.s32xlevel.xsollaweather.ui.recyclers.GridSpacesItemDecoration
-import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.setToPreferences
 import me.s32xlevel.xsollaweather.util.WeatherUtil
@@ -74,8 +71,6 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
             api.getForecast5day3hours(city.id)
                 .enqueue(asyncCall(
                     onSuccess = { weatherResponse ->
-                        context?.setToPreferences(PreferencesManager.LAST_NETWORK_CONNECT, System.currentTimeMillis())
-
                         val weather = weatherResponse.body() ?: return@asyncCall
                         val iconRes =
                             WeatherUtil.getWeatherImageResourceFromDescription(weather.list[0].weatherDescriptions[0].description)
@@ -91,8 +86,7 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
                         )
                         saveWeatherToDb(weather)
                         recyclerAdapter.notifyDataSetChanged()
-                    },
-                    onBadRequest = {}
+                    }
                 ))
         }
     }

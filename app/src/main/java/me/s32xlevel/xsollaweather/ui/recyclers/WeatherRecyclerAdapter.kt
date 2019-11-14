@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.weather_item.view.*
 import me.s32xlevel.xsollaweather.R
-import me.s32xlevel.xsollaweather.model.WeatherEntity
+import me.s32xlevel.xsollaweather.business.model.WeatherEntity
 import me.s32xlevel.xsollaweather.util.WeatherUtil
 
 class WeatherRecyclerAdapter(private val weathers: List<WeatherEntity>) :

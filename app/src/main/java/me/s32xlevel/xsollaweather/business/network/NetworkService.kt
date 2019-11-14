@@ -1,8 +1,10 @@
-package me.s32xlevel.xsollaweather.network
+package me.s32xlevel.xsollaweather.business.network
 
 import androidx.fragment.app.Fragment
 import com.google.gson.GsonBuilder
 import me.s32xlevel.xsollaweather.R
+import me.s32xlevel.xsollaweather.util.PreferencesManager
+import me.s32xlevel.xsollaweather.util.PreferencesManager.setToPreferences
 import me.s32xlevel.xsollaweather.util.ToastManager.showToast
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -30,21 +32,19 @@ val api: WeatherApi by lazy {
         .create(WeatherApi::class.java)
 }
 
-fun <T> Fragment.asyncCall(
-    onSuccess: (response: Response<T>) -> Unit,
-    onBadRequest: () -> Unit
-) = CallbackImpl(this, onSuccess, onBadRequest)
+fun <T> Fragment.asyncCall(onSuccess: (response: Response<T>) -> Unit) = CallbackImpl(this, onSuccess)
 
 class CallbackImpl<T>(
     private val fragment: Fragment,
-    private val onSuccess: (response: Response<T>) -> Unit,
-    private val onBadRequest: () -> Unit
+    private val onSuccess: (response: Response<T>) -> Unit
 ) : Callback<T> {
 
     override fun onResponse(call: Call<T>, response: Response<T>) {
         when (response.code()) {
-            200 -> onSuccess.invoke(response)
-            else -> onBadRequest.invoke()
+            200 -> {
+                fragment.context?.setToPreferences(PreferencesManager.LAST_NETWORK_CONNECT, System.currentTimeMillis())
+                onSuccess.invoke(response)
+            }
         }
     }
 

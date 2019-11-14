@@ -1,4 +1,4 @@
-package me.s32xlevel.xsollaweather.model
+package me.s32xlevel.xsollaweather.business.model
 
 import com.google.gson.annotations.SerializedName
 

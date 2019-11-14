@@ -1,7 +1,6 @@
-package me.s32xlevel.xsollaweather.model
+package me.s32xlevel.xsollaweather.business.model
 
 import androidx.room.*
-import java.util.*
 
 @Entity(tableName = "cities")
 data class CityEntity(

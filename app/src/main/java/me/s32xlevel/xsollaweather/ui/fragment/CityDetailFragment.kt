@@ -1,6 +1,5 @@
 package me.s32xlevel.xsollaweather.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -8,18 +7,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_city_detail.*
-import me.s32xlevel.xsollaweather.App
 import me.s32xlevel.xsollaweather.R
-import me.s32xlevel.xsollaweather.model.WeatherEntity
+import me.s32xlevel.xsollaweather.business.model.WeatherEntity
+import me.s32xlevel.xsollaweather.business.network.api
+import me.s32xlevel.xsollaweather.business.network.asyncCall
 import me.s32xlevel.xsollaweather.ui.recyclers.CustomLinearDividerItemDecoration
 import me.s32xlevel.xsollaweather.ui.recyclers.DatesRecyclerAdapter
 import me.s32xlevel.xsollaweather.ui.recyclers.WeatherRecyclerAdapter
+import me.s32xlevel.xsollaweather.util.DbUtils
 import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.getIntFromPreferences
 import me.s32xlevel.xsollaweather.util.PreferencesManager.getLongFromPreferences
 
-class CityDetailFragment : Fragment(R.layout.fragment_city_detail) {
+class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail) {
 
     companion object {
         // Префы + сравнение времени посл. обновления и текущего
@@ -28,17 +29,22 @@ class CityDetailFragment : Fragment(R.layout.fragment_city_detail) {
         }
     }
 
-    private val cityRepository by lazy { App.getInstance().getDatabase().cityRepository() }
-
-    private val weatherRepository by lazy { App.getInstance().getDatabase().weatherRepository() }
-
     private val lastUpdate: Long by lazy { context?.getLongFromPreferences(PreferencesManager.LAST_NETWORK_CONNECT)!! }
 
     private val currentCityId: Int by lazy { context?.getIntFromPreferences(PreferencesManager.SAVED_CITY)!! }
 
     private lateinit var selectedDay: String
 
+    // TODO: !!!!Остановился здесь. Нужно нормально работать с сетью. Допилить offline mode
+    // TODO: !!!! + При заходе отображение лого, а также "о себе"
+    // Если не загрузилось на этом моменте сеть, знач ничего нет, значит показ ошибки
+    // Пустые списки для ресайклера
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val cityWeather = weatherRepository.findAllByCityId(currentCityId)
+        if (cityWeather.weathers.isEmpty()) {
+            api.getForecast5day3hours(currentCityId)
+                .enqueue(asyncCall { DbUtils.saveWeatherToDb(it.body()!!) })
+        }
         selectedDay = weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt
         configureToolbar()
         configureRecyclerForDates()
@@ -58,7 +64,7 @@ class CityDetailFragment : Fragment(R.layout.fragment_city_detail) {
         val city = cityRepository.findById(currentCityId)
         with((activity as AppCompatActivity).supportActionBar!!) {
             title = city.name
-            setDisplayHomeAsUpEnabled(true) // TODO В зависимости от того был ли при первом заходе выбран
+            setDisplayHomeAsUpEnabled(true)
         }
         setHasOptionsMenu(true)
     }

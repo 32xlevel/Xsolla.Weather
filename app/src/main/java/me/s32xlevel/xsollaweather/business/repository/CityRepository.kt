@@ -1,9 +1,8 @@
-package me.s32xlevel.xsollaweather.repository
+package me.s32xlevel.xsollaweather.business.repository
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
-import me.s32xlevel.xsollaweather.model.CityEntity
+import me.s32xlevel.xsollaweather.business.model.CityEntity
 
 @Dao
 interface CityRepository {

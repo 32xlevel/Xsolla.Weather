@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.city_card_item.view.*
 import me.s32xlevel.xsollaweather.R
-import me.s32xlevel.xsollaweather.model.CityChoose
+import me.s32xlevel.xsollaweather.business.model.CityChoose
 
 class CityChooseRecyclerAdapter(private val data: List<CityChoose>) :
     RecyclerView.Adapter<CityChooseRecyclerAdapter.CityMainViewHolder>() {
