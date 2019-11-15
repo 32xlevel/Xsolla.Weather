@@ -3,6 +3,7 @@ package me.s32xlevel.xsollaweather.business.network
 import androidx.fragment.app.Fragment
 import com.google.gson.GsonBuilder
 import me.s32xlevel.xsollaweather.R
+import me.s32xlevel.xsollaweather.util.LockManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.setToPreferences
 import me.s32xlevel.xsollaweather.util.ToastManager.showToast
@@ -34,16 +35,24 @@ val api: WeatherApi by lazy {
 
 fun <T> Fragment.asyncCall(
     onSuccess: (response: Response<T>) -> Unit,
-    onFailure: () -> Unit
-) = CallbackImpl(this, onSuccess, onFailure)
+    onFailure: () -> Unit,
+    lockCallback: ((Boolean) -> Unit)? = LockManager::changeLockState
+) = CallbackImpl(this, onSuccess, onFailure, lockCallback)
 
 class CallbackImpl<T>(
     private val fragment: Fragment,
     private val onSuccess: (response: Response<T>) -> Unit,
-    private val onFailure: () -> Unit
+    private val onFailure: () -> Unit,
+    private val lockCallback: ((Boolean) -> Unit)? = LockManager::changeLockState
 ) : Callback<T> {
 
+    init {
+        lockCallback?.invoke(true)
+    }
+
     override fun onResponse(call: Call<T>, response: Response<T>) {
+        lockCallback?.invoke(false)
+
         when (response.code()) {
             200 -> {
                 fragment.context?.setToPreferences(PreferencesManager.LAST_NETWORK_CONNECT, System.currentTimeMillis())
@@ -53,6 +62,7 @@ class CallbackImpl<T>(
     }
 
     override fun onFailure(call: Call<T>, t: Throwable) {
+        lockCallback?.invoke(false)
         fragment.showToast(R.string.network_error)
         onFailure.invoke()
     }
