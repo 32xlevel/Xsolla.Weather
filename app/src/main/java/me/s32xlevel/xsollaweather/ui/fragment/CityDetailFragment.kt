@@ -1,6 +1,10 @@
 package me.s32xlevel.xsollaweather.ui.fragment
 
+import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -17,9 +21,11 @@ import me.s32xlevel.xsollaweather.ui.recyclers.CustomLinearDividerItemDecoration
 import me.s32xlevel.xsollaweather.ui.recyclers.DatesRecyclerAdapter
 import me.s32xlevel.xsollaweather.ui.recyclers.WeatherRecyclerAdapter
 import me.s32xlevel.xsollaweather.util.DbUtils
+import me.s32xlevel.xsollaweather.util.ErrorManager.showErrorBanner
 import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.getIntFromPreferences
+import me.s32xlevel.xsollaweather.util.ToastManager.showToast
 
 class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail) {
 
@@ -41,22 +47,15 @@ class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail) {
             api.getForecast5day3hours(currentCityId)
                 .enqueue(asyncCall(
                     onSuccess = {
+                        weatherRepository.clear()
                         DbUtils.saveWeatherToDb(it.body()!!)
                         selectedDay = weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt
                         configureRecyclerForDates()
                         configureRecyclerForWeather()
                     },
                     onFailure = { // TODO: onFailure -> если есть кэш то его, иначе показ баннера
-                        with(activity!!) {
-                            error_banner.visibility = View.VISIBLE
-                            error_banner.animate().setDuration(400).alpha(1f)
-                            (this as AppCompatActivity).supportActionBar?.hide()
-                            error_button.setOnClickListener {
-                                error_banner.animate().setDuration(400).alpha(0f)
-                                error_banner.visibility = View.GONE
-                                (this as AppCompatActivity).supportActionBar?.show()
-                                changeFragment(newInstance(), cleanStack = true)
-                            }
+                        showErrorBanner {
+                            changeFragment(newInstance(), cleanStack = true)
                         }
                     }
                 ))
@@ -67,13 +66,36 @@ class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail) {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            activity?.changeFragment(CityChooseFragment.newInstance(), cleanStack = true)
-            return true
-        }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.city_detail_menu, menu)
+    }
 
-        return super.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            android.R.id.home -> {
+                activity?.changeFragment(CityChooseFragment.newInstance(), cleanStack = true)
+                return true
+            }
+            R.id.app_bar_update -> {
+                api.getForecast5day3hours(currentCityId)
+                    .enqueue(asyncCall(
+                        onSuccess = {
+                            weatherRepository.clear()
+                            DbUtils.saveWeatherToDb(it.body()!!)
+                            selectedDay = weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt
+                            configureRecyclerForDates()
+                            configureRecyclerForWeather()
+                        },
+                        onFailure = {
+                            showErrorBanner {
+                                changeFragment(newInstance(), cleanStack = true)
+                            }
+                        }
+                    ))
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
     private fun configureToolbar() {

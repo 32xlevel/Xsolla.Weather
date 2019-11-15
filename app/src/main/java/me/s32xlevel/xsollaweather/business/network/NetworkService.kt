@@ -14,6 +14,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 const val API_KEY = "3b19c25dbd0a3120f572221bc07f83cc"
 const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
@@ -26,6 +27,7 @@ val api: WeatherApi by lazy {
                 .addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BODY
                 })
+                .connectTimeout(6, TimeUnit.SECONDS)
                 .build()
         )
         .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))

@@ -9,8 +9,6 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.error_banner.*
 import kotlinx.android.synthetic.main.fragment_city_choose.*
 import me.s32xlevel.xsollaweather.R
 import me.s32xlevel.xsollaweather.business.model.CityChoose
@@ -19,7 +17,7 @@ import me.s32xlevel.xsollaweather.business.network.asyncCall
 import me.s32xlevel.xsollaweather.ui.recyclers.CityChooseRecyclerAdapter
 import me.s32xlevel.xsollaweather.ui.recyclers.GridSpacesItemDecoration
 import me.s32xlevel.xsollaweather.util.DbUtils
-import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
+import me.s32xlevel.xsollaweather.util.ErrorManager.showErrorBanner
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.setToPreferences
 import me.s32xlevel.xsollaweather.util.WeatherUtil
@@ -72,7 +70,6 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
     }
 
     // TODO если пустой список городов, то надо особо обрабатывать
-    // TODO: new city -> обратно на экран выбора -> одни и те же данные
     // TODO: onFailure -> если есть кэш то его, иначе показ баннера
     private fun initDataAndConfigureCityChooseAdapter() {
         val savedCities = cityRepository.getAllSaved()
@@ -100,16 +97,8 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
                         recyclerAdapter.notifyDataSetChanged()
                     },
                     onFailure = {
-                        with(activity) {
-                            error_banner.visibility = View.VISIBLE
-                            error_banner.animate().setDuration(400).alpha(1f)
-                            (this as AppCompatActivity).supportActionBar?.hide()
-                            error_button.setOnClickListener {
-                                error_banner.animate().setDuration(400).alpha(0f)
-                                error_banner.visibility = View.GONE
-                                (this as AppCompatActivity).supportActionBar?.show()
-                                changeFragment(newInstance(), cleanStack = true)
-                            }
+                        showErrorBanner {
+                            changeFragment(newInstance(), cleanStack = true)
                         }
                     }
                 ))
