@@ -1,7 +1,5 @@
 package me.s32xlevel.xsollaweather.ui.fragment
 
-import android.content.Context
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -10,8 +8,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.error_banner.*
 import kotlinx.android.synthetic.main.fragment_city_detail.*
 import me.s32xlevel.xsollaweather.R
 import me.s32xlevel.xsollaweather.business.model.WeatherEntity
@@ -25,7 +21,6 @@ import me.s32xlevel.xsollaweather.util.ErrorManager.showErrorBanner
 import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.getIntFromPreferences
-import me.s32xlevel.xsollaweather.util.ToastManager.showToast
 
 class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail) {
 
@@ -42,28 +37,28 @@ class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         configureToolbar()
 
-        val cityWeather = weatherRepository.findAllByCityId(currentCityId)
-        if (cityWeather.weathers.isEmpty()) {
-            api.getForecast5day3hours(currentCityId)
-                .enqueue(asyncCall(
-                    onSuccess = {
-                        weatherRepository.clear()
-                        DbUtils.saveWeatherToDb(it.body()!!)
-                        selectedDay = weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt
-                        configureRecyclerForDates()
-                        configureRecyclerForWeather()
-                    },
-                    onFailure = { // TODO: onFailure -> если есть кэш то его, иначе показ баннера
+        api.getForecast5day3hours(currentCityId)
+            .enqueue(asyncCall(
+                onSuccess = {
+                    weatherRepository.clearById(currentCityId)
+                    DbUtils.saveWeatherToDb(it.body()!!)
+                    selectedDay = weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt
+                    configureRecyclerForDates()
+                    configureRecyclerForWeather()
+                },
+                onFailure = {
+                    val cityWeatherInDb = weatherRepository.findAllByCityId(currentCityId)
+                    if (cityWeatherInDb.weathers.isEmpty()) {
                         showErrorBanner {
                             changeFragment(newInstance(), cleanStack = true)
                         }
+                    } else {
+                        selectedDay = weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt
+                        configureRecyclerForDates()
+                        configureRecyclerForWeather()
                     }
-                ))
-        } else {
-            selectedDay = weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt
-            configureRecyclerForDates()
-            configureRecyclerForWeather()
-        }
+                }
+            ))
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -80,15 +75,17 @@ class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail) {
                 api.getForecast5day3hours(currentCityId)
                     .enqueue(asyncCall(
                         onSuccess = {
-                            weatherRepository.clear()
+                            weatherRepository.clearById(currentCityId)
                             DbUtils.saveWeatherToDb(it.body()!!)
                             selectedDay = weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt
                             configureRecyclerForDates()
                             configureRecyclerForWeather()
                         },
                         onFailure = {
-                            showErrorBanner {
-                                changeFragment(newInstance(), cleanStack = true)
+                            if(weatherRepository.findAllByCityId(currentCityId).weathers.isEmpty()) {
+                                showErrorBanner {
+                                    changeFragment(newInstance(), cleanStack = true)
+                                }
                             }
                         }
                     ))

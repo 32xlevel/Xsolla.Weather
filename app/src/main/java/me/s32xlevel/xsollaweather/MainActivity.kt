@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity(), LockCallback {
         if ((getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).allNetworks.isNotEmpty()) {
             val lastConnect = getLongFromPreferences(PreferencesManager.LAST_NETWORK_CONNECT)
             if (lastConnect != -1L && System.currentTimeMillis() - lastConnect > TimeUnit.HOURS.toMillis(2)) {
-                App.getInstance().getDatabase().weatherRepository().clear()
+                App.getInstance().getDatabase().weatherRepository().clearAll()
             }
         }
 

@@ -11,8 +11,11 @@ interface WeatherRepository {
     @Query("SELECT * FROM cities WHERE id = :cityId")
     fun findAllByCityId(cityId: Int): CityWithWeather
 
+    @Query("DELETE FROM weather WHERE city_id = :cityId")
+    fun clearById(cityId: Int)
+
     @Query("DELETE FROM weather")
-    fun clear()
+    fun clearAll()
 
     @Insert
     fun save(weather: WeatherEntity)

@@ -13,4 +13,16 @@
         tools:itemCount="3"
         tools:listitem="@layout/city_card_item" />
 
+    <TextView
+        android:id="@+id/cities_empty_tv"
+        style="@style/TextViewTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Чтобы смотреть погоду, добавьте хотя бы один город"
+        android:textAlignment="center"
+        android:visibility="gone" />
+
 </FrameLayout>

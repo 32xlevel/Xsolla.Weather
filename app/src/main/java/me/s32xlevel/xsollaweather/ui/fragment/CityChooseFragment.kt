@@ -69,39 +69,46 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
         setHasOptionsMenu(true)
     }
 
-    // TODO если пустой список городов, то надо особо обрабатывать
-    // TODO: onFailure -> если есть кэш то его, иначе показ баннера
     private fun initDataAndConfigureCityChooseAdapter() {
+        cities_empty_tv.visibility = View.GONE
         val savedCities = cityRepository.getAllSaved()
-        if (weatherRepository.findAllByCityId(savedCities[0].id).weathers.isNotEmpty()) {
-            weatherRepository.clear()
-        }
-        savedCities.forEach { city ->
-            api.getForecast5day3hours(city.id)
-                .enqueue(asyncCall(
-                    onSuccess = { weatherResponse ->
-                        val weather = weatherResponse.body() ?: return@asyncCall
-                        val iconRes =
-                            WeatherUtil.getWeatherImageResourceFromDescription(weather.list[0].weatherDescriptions[0].description)
 
-                        cities.add(
-                            CityChoose(
-                                id = city.id,
-                                name = city.name,
-                                weatherImage = BitmapFactory.decodeResource(resources, iconRes),
-                                tempMin = (weather.list[0].main.tempMin - 273).toInt(),
-                                tempMax = (weather.list[0].main.tempMax - 273).toInt()
+        if (savedCities.isEmpty()) {
+            cities_empty_tv.visibility = View.VISIBLE
+        } else {
+            savedCities.forEach { city ->
+                api.getForecast5day3hours(city.id)
+                    .enqueue(asyncCall(
+                        onSuccess = { weatherResponse ->
+                            if (weatherRepository.findAllByCityId(city.id).weathers.isNotEmpty()) {
+                                weatherRepository.clearById(city.id)
+                            }
+
+                            val weather = weatherResponse.body() ?: return@asyncCall
+                            val iconRes =
+                                WeatherUtil.getWeatherImageResourceFromDescription(weather.list[0].weatherDescriptions[0].description)
+
+                            cities.add(
+                                CityChoose(
+                                    id = city.id,
+                                    name = city.name,
+                                    weatherImage = BitmapFactory.decodeResource(resources, iconRes),
+                                    tempMin = (weather.list[0].main.tempMin - 273).toInt(),
+                                    tempMax = (weather.list[0].main.tempMax - 273).toInt()
+                                )
                             )
-                        )
-                        DbUtils.saveWeatherToDb(weather)
-                        recyclerAdapter.notifyDataSetChanged()
-                    },
-                    onFailure = {
-                        showErrorBanner {
-                            changeFragment(newInstance(), cleanStack = true)
+                            DbUtils.saveWeatherToDb(weather)
+                            recyclerAdapter.notifyDataSetChanged()
+                        },
+                        onFailure = {
+                            if (weatherRepository.findAllByCityId(city.id).weathers.isEmpty()) {
+                                showErrorBanner {
+                                    changeFragment(newInstance(), cleanStack = true)
+                                }
+                            }
                         }
-                    }
-                ))
+                    ))
+            }
         }
     }
 
@@ -120,6 +127,12 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
                         .setPositiveButton("Да") { _, _ ->
                             cityRepository.delete(it.id)
                             cities.remove(it)
+
+                            if(cityRepository.getAllSaved().isEmpty()) {
+                                cities_empty_tv.visibility = View.VISIBLE
+                                context?.setToPreferences(PreferencesManager.SAVED_CITY, -1)
+                            }
+
                             notifyDataSetChanged()
                         }
                         .setNegativeButton("Нет") { dialog, _ -> dialog.dismiss() }
