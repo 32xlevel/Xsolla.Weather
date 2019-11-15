@@ -36,7 +36,15 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         configureToolbar()
-        initData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (cities.isNotEmpty()) {
+            cities.clear()
+        }
+
+        initDataAndConfigureCityChooseAdapter()
         configureRecycler()
     }
 
@@ -66,7 +74,7 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
     // TODO если пустой список городов, то надо особо обрабатывать
     // TODO: new city -> обратно на экран выбора -> одни и те же данные
     // TODO: onFailure -> если есть кэш то его, иначе показ баннера
-    private fun initData() {
+    private fun initDataAndConfigureCityChooseAdapter() {
         val savedCities = cityRepository.getAllSaved()
         if (weatherRepository.findAllByCityId(savedCities[0].id).weathers.isNotEmpty()) {
             weatherRepository.clear()

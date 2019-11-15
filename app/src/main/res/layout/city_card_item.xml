@@ -2,29 +2,25 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="150dp"
-    android:layout_height="150dp"
-    android:clickable="true"
-    android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    style="@style/Ripple"
+    android:layout_width="@dimen/card_size"
+    android:layout_height="@dimen/card_size"
+    app:cardCornerRadius="@dimen/standart_8dp"
+    app:cardElevation="@dimen/cardview_default_radius">
 
     <TextView
         android:id="@+id/city_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/city_name_tv"
+        style="@style/TextViewTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/roboto"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
+        android:layout_marginTop="@dimen/standart_8dp"
         tools:text="Moscow" />
 
     <ImageView
@@ -38,13 +34,11 @@
 
     <TextView
         android:id="@+id/weather_range_tv"
+        style="@style/TextViewTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="8dp"
-        android:fontFamily="@font/roboto"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
+        android:layout_marginBottom="@dimen/standart_8dp"
         tools:text="0° .. +5°" />
 
 </androidx.cardview.widget.CardView>
