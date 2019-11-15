@@ -36,6 +36,7 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
         configureToolbar()
     }
 
+    // TODO: Update --> Проблемы с инетом --> баг
     override fun onResume() {
         super.onResume()
         if (cities.isNotEmpty()) {
@@ -123,8 +124,8 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
                 }
                 setOnCityLongClickListener {
                     AlertDialog.Builder(context)
-                        .setTitle("Удалить город?")
-                        .setPositiveButton("Да") { _, _ ->
+                        .setTitle(getString(R.string.fragment_choose_delete_city))
+                        .setPositiveButton(getString(R.string.fragment_choose_yes)) { _, _ ->
                             cityRepository.delete(it.id)
                             cities.remove(it)
 
@@ -135,7 +136,7 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
 
                             notifyDataSetChanged()
                         }
-                        .setNegativeButton("Нет") { dialog, _ -> dialog.dismiss() }
+                        .setNegativeButton(getString(R.string.fragment_choose_no)) { dialog, _ -> dialog.dismiss() }
                         .show()
                 }
             }

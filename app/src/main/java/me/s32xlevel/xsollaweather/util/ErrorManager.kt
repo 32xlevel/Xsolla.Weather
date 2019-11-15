@@ -42,7 +42,7 @@ object ErrorManager {
         }
     }
 
-    fun FragmentActivity.checkInternetConnection(): Boolean {
+    private fun FragmentActivity.checkInternetConnection(): Boolean {
         return (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).allNetworks.isNotEmpty()
     }
 }

@@ -19,9 +19,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="Чтобы смотреть погоду, добавьте хотя бы один город"
+        android:layout_marginStart="@dimen/standart_16dp"
+        android:layout_marginEnd="@dimen/standart_16dp"
+        android:text="@string/fragment_choose_empty_cities"
         android:textAlignment="center"
         android:visibility="gone" />
 

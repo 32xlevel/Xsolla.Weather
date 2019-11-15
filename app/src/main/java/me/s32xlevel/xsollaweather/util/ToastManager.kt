@@ -13,16 +13,6 @@ object ToastManager {
         context?.showToast(stringRes)
     }
 
-    fun Fragment.showToast(string: String) {
-        context?.showToast(string)
-    }
-
-    fun Context.showToast(string: String) {
-        toast?.cancel()
-        toast = Toast.makeText(this, string, Toast.LENGTH_LONG)
-        toast?.show()
-    }
-
     fun Context.showToast(@StringRes stringRes : Int) {
         toast?.cancel()
         toast = Toast.makeText(this, getString(stringRes), Toast.LENGTH_LONG)

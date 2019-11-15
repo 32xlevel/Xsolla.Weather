@@ -7,4 +7,12 @@
     <string name="update_hint_menu">Обновить данные</string>
 
     <string name="network_error">Чтобы получить актуальные данные, проверьте подключение к интернету</string>
+    <string name="network_error_tv">Произошел сбой в работе приложения, пожалуйста, проверьте ваше интернет-соединение и перезагрузите страницу</string>
+    <string name="network_error_btn">Перезагрузить</string>
+
+    <string name="fragment_choose_delete_city">Удалить город?</string>
+    <string name="fragment_choose_yes">Да</string>
+    <string name="fragment_choose_no">Нет</string>
+    <string name="fragment_choose_empty_cities">Чтобы смотреть погоду, добавьте хотя бы один город</string>
+    <string name="fragment_add_title">Добавить город</string>
 </resources>

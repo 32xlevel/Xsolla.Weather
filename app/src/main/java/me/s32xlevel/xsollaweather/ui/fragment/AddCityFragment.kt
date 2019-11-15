@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_add_city.*
 import me.s32xlevel.xsollaweather.R
 import me.s32xlevel.xsollaweather.ui.recyclers.AddCityRecyclerAdapter
-import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.setToPreferences
 
@@ -37,7 +36,7 @@ class AddCityFragment : BaseFragment(R.layout.fragment_add_city) {
 
     private fun configureToolbar() {
         with((activity as AppCompatActivity).supportActionBar!!) {
-            title = "Добавить город"
+            title = getString(R.string.fragment_add_title)
             setDisplayHomeAsUpEnabled(true)
         }
         setHasOptionsMenu(true)
@@ -49,7 +48,7 @@ class AddCityFragment : BaseFragment(R.layout.fragment_add_city) {
             adapter = AddCityRecyclerAdapter().apply {
                 setOnClickListener { cityId ->
                     context?.setToPreferences(PreferencesManager.SAVED_CITY, cityId)
-                    activity?.changeFragment(CityDetailFragment.newInstance())
+                    changeFragment(CityDetailFragment.newInstance())
                     cityRepository.save(cityId)
                 }
             }

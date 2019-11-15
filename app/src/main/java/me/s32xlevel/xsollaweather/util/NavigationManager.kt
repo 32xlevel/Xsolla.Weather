@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import me.s32xlevel.xsollaweather.R
 
 object NavigationManager {
-    const val FRAGMENT_TAG = "FragmentTag"
+    private const val FRAGMENT_TAG = "FragmentTag"
 
     fun FragmentActivity.changeFragment(fragment: Fragment, cleanStack: Boolean = false) {
         if (cleanStack) {

@@ -3,7 +3,11 @@
     <dimen name="button_corner_radius">25dp</dimen>
     <dimen name="oval_size">12dp</dimen>
     <dimen name="menu_icon_size">24dp</dimen>
-    <dimen name="standart_8dp">8dp</dimen>
     <dimen name="card_size">150dp</dimen>
+
+    <dimen name="standart_8dp">8dp</dimen>
     <dimen name="standart_text_size">18sp</dimen>
+    <dimen name="standart_16dp">16dp</dimen>
+    <dimen name="standart_36dp">36dp</dimen>
+    <dimen name="day_number_size">24dp</dimen>
 </resources>
