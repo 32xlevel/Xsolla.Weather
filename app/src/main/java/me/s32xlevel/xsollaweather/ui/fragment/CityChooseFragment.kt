@@ -17,7 +17,7 @@ import me.s32xlevel.xsollaweather.business.network.asyncCall
 import me.s32xlevel.xsollaweather.ui.recyclers.CityChooseRecyclerAdapter
 import me.s32xlevel.xsollaweather.ui.recyclers.GridSpacesItemDecoration
 import me.s32xlevel.xsollaweather.util.DbUtils
-import me.s32xlevel.xsollaweather.util.ErrorManager.showErrorBanner
+import me.s32xlevel.xsollaweather.util.ErrorBannerManager.showErrorBanner
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.setToPreferences
 import me.s32xlevel.xsollaweather.util.WeatherUtil

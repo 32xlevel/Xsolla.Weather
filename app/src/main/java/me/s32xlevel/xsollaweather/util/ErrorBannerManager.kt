@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.error_banner.*
 import me.s32xlevel.xsollaweather.R
 import me.s32xlevel.xsollaweather.util.ToastManager.showToast
 
-object ErrorManager {
+object ErrorBannerManager {
     fun Fragment.showErrorBanner(onClickListener: () -> Unit) {
         showBanner()
         with (activity!!) {

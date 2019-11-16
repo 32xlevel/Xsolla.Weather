@@ -17,7 +17,7 @@ import me.s32xlevel.xsollaweather.ui.recyclers.CustomLinearDividerItemDecoration
 import me.s32xlevel.xsollaweather.ui.recyclers.DatesRecyclerAdapter
 import me.s32xlevel.xsollaweather.ui.recyclers.WeatherRecyclerAdapter
 import me.s32xlevel.xsollaweather.util.DbUtils
-import me.s32xlevel.xsollaweather.util.ErrorManager.showErrorBanner
+import me.s32xlevel.xsollaweather.util.ErrorBannerManager.showErrorBanner
 import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.getIntFromPreferences
