@@ -10,7 +10,7 @@
     <string name="network_error_tv">Произошел сбой в работе приложения, пожалуйста, проверьте ваше интернет-соединение и перезагрузите страницу</string>
     <string name="network_error_btn">Перезагрузить</string>
 
-    <string name="fragment_choose_delete_city">Удалить город?</string>
+    <string name="fragment_choose_delete_city">Удалить город %s?</string>
     <string name="fragment_choose_yes">Да</string>
     <string name="fragment_choose_no">Нет</string>
     <string name="fragment_choose_empty_cities">Чтобы смотреть погоду, добавьте хотя бы один город</string>

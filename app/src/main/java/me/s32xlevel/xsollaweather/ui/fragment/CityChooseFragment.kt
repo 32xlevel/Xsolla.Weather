@@ -149,7 +149,7 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose),
                 }
                 setOnCityLongClickListener {
                     AlertDialog.Builder(context)
-                        .setTitle(getString(R.string.fragment_choose_delete_city))
+                        .setTitle(getString(R.string.fragment_choose_delete_city, it.name))
                         .setPositiveButton(getString(R.string.fragment_choose_yes)) { _, _ ->
                             cityRepository.delete(it.id)
                             cities.remove(it)
