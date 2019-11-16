@@ -9,8 +9,8 @@ import kotlinx.android.synthetic.main.city_card_item.view.*
 import me.s32xlevel.xsollaweather.R
 import me.s32xlevel.xsollaweather.business.model.CityChoose
 
-class CityChooseRecyclerAdapter(private val data: List<CityChoose>) :
-    RecyclerView.Adapter<CityChooseRecyclerAdapter.CityMainViewHolder>() {
+class CityChooseAdapter(private val data: List<CityChoose>) :
+    RecyclerView.Adapter<CityChooseAdapter.CityMainViewHolder>() {
 
     private var onClickListener: (cityId: Int) -> Unit = {}
     private var onLongClickListener: (city: CityChoose) -> Unit = {}

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_add_city.*
 import me.s32xlevel.xsollaweather.R
-import me.s32xlevel.xsollaweather.ui.recyclers.AddCityRecyclerAdapter
+import me.s32xlevel.xsollaweather.ui.recyclers.AddCityAdapter
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.setToPreferences
 
@@ -45,7 +45,7 @@ class AddCityFragment : BaseFragment(R.layout.fragment_add_city) {
     private fun configureRecycler() {
         with(finded_city_rv) {
             addItemDecoration(DividerItemDecoration(context, RecyclerView.VERTICAL))
-            adapter = AddCityRecyclerAdapter().apply {
+            adapter = AddCityAdapter().apply {
                 setOnClickListener { cityId ->
                     context?.setToPreferences(PreferencesManager.SAVED_CITY, cityId)
                     changeFragment(CityDetailFragment.newInstance())

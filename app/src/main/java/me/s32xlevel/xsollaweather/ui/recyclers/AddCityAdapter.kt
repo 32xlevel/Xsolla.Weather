@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.finded_city_item.view.*
 import me.s32xlevel.xsollaweather.App
 import me.s32xlevel.xsollaweather.R
 
-class AddCityRecyclerAdapter : RecyclerView.Adapter<AddCityRecyclerAdapter.ViewHolder>() {
+class AddCityAdapter : RecyclerView.Adapter<AddCityAdapter.ViewHolder>() {
     private val cityRepository = App.getInstance().getDatabase().cityRepository()
     private val data = cityRepository.getAllNotSaved()
 

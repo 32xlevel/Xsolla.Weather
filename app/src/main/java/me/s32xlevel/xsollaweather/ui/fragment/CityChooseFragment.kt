@@ -14,7 +14,7 @@ import me.s32xlevel.xsollaweather.R
 import me.s32xlevel.xsollaweather.business.model.CityChoose
 import me.s32xlevel.xsollaweather.business.network.api
 import me.s32xlevel.xsollaweather.business.network.asyncCall
-import me.s32xlevel.xsollaweather.ui.recyclers.CityChooseRecyclerAdapter
+import me.s32xlevel.xsollaweather.ui.recyclers.CityChooseAdapter
 import me.s32xlevel.xsollaweather.ui.recyclers.GridSpacesItemDecoration
 import me.s32xlevel.xsollaweather.util.DbUtils
 import me.s32xlevel.xsollaweather.util.ErrorBannerManager.showErrorBanner
@@ -30,7 +30,7 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
 
     private val cities = arrayListOf<CityChoose>()
 
-    private val recyclerAdapter = CityChooseRecyclerAdapter(cities)
+    private val recyclerAdapter = CityChooseAdapter(cities)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         configureToolbar()

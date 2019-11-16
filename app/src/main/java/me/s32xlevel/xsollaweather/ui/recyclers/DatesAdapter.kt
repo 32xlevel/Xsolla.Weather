@@ -9,8 +9,8 @@ import kotlinx.android.synthetic.main.date_item.view.*
 import me.s32xlevel.xsollaweather.R
 import me.s32xlevel.xsollaweather.util.WeatherUtil
 
-class DatesRecyclerAdapter(private val dates: Set<String>) :
-    RecyclerView.Adapter<DatesRecyclerAdapter.DatesViewHolder>() {
+class DatesAdapter(private val dates: Set<String>) :
+    RecyclerView.Adapter<DatesAdapter.DatesViewHolder>() {
 
     private var selectedDay = dates.elementAt(0)
 
