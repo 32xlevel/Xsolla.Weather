@@ -9,6 +9,7 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.android.synthetic.main.fragment_city_choose.*
 import me.s32xlevel.xsollaweather.R
 import me.s32xlevel.xsollaweather.business.model.CityChoose
@@ -22,7 +23,14 @@ import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.setToPreferences
 import me.s32xlevel.xsollaweather.util.WeatherUtil
 
-class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
+class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose),
+    SwipeRefreshLayout.OnRefreshListener {
+
+    override fun onRefresh() {
+        initDataAndConfigureCityChooseAdapter()
+        configureRecycler()
+        city_choose_layout.isRefreshing = false
+    }
 
     companion object {
         fun newInstance() = CityChooseFragment()
@@ -33,6 +41,7 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
     private val recyclerAdapter = CityChooseAdapter(cities)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        city_choose_layout.setOnRefreshListener(this)
         configureToolbar()
     }
 
@@ -89,18 +98,21 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
                             val iconRes =
                                 WeatherUtil.getWeatherImageResourceFromDescription(weather.list[0].weatherDescriptions[0].description)
 
-                            cities.add(
-                                CityChoose(
-                                    id = city.id,
-                                    name = city.name,
-                                    weatherImage = BitmapFactory.decodeResource(
-                                        resources,
-                                        iconRes
-                                    ),
-                                    tempMin = (weather.list[0].main.tempMin - 273).toInt(),
-                                    tempMax = (weather.list[0].main.tempMax - 273).toInt()
-                                )
+                            val cityChoose = CityChoose(
+                                id = city.id,
+                                name = city.name,
+                                weatherImage = BitmapFactory.decodeResource(
+                                    resources,
+                                    iconRes
+                                ),
+                                tempMin = (weather.list[0].main.tempMin - 273).toInt(),
+                                tempMax = (weather.list[0].main.tempMax - 273).toInt()
                             )
+
+                            if (cityChoose !in cities) {
+                                cities.add(cityChoose)
+                            }
+
                             DbUtils.saveWeatherToDb(weather)
                             recyclerAdapter.notifyDataSetChanged()
                         },
