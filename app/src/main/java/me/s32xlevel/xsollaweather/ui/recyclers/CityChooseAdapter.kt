@@ -1,6 +1,7 @@
 package me.s32xlevel.xsollaweather.ui.recyclers
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,12 +31,13 @@ class CityChooseAdapter(private val data: List<CityChoose>) :
         with(holder.itemView) {
             city_id.text = cityChoose.id.toString()
             city_name_tv.text = cityChoose.name
-            weather_iv.setImageBitmap(cityChoose.weatherImage)
+            weather_iv.setImageBitmap(BitmapFactory.decodeResource(resources, cityChoose.weatherImage))
             weather_range_tv.text = "${cityChoose.tempMin}° .. ${cityChoose.tempMax}°"
 
             setOnClickListener { onClickListener.invoke(cityChoose.id) }
             setOnLongClickListener { onLongClickListener.invoke(cityChoose); true }
         }
+
     }
 
     override fun getItemCount() = data.size

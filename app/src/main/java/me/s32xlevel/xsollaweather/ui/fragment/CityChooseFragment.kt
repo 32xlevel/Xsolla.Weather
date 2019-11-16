@@ -30,6 +30,7 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose),
         initDataAndConfigureCityChooseAdapter()
         configureRecycler()
         city_choose_layout.isRefreshing = false
+        cities_rv.invalidate()
     }
 
     companion object {
@@ -59,17 +60,13 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose),
         inflater.inflate(R.menu.city_choose_menu, menu)
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.app_bar_add -> {
                 changeFragment(AddCityFragment.newInstance())
-                return true
+                true
             }
-            R.id.app_bar_update -> {
-                changeFragment(newInstance(), cleanStack = true) // TODO ?
-                return true
-            }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun configureToolbar() {
@@ -101,10 +98,7 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose),
                             val cityChoose = CityChoose(
                                 id = city.id,
                                 name = city.name,
-                                weatherImage = BitmapFactory.decodeResource(
-                                    resources,
-                                    iconRes
-                                ),
+                                weatherImage = iconRes,
                                 tempMin = (weather.list[0].main.tempMin - 273).toInt(),
                                 tempMax = (weather.list[0].main.tempMax - 273).toInt()
                             )
@@ -127,15 +121,12 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose),
                                 val cityChoose = CityChoose(
                                     id = city.id,
                                     name = city.name,
-                                    weatherImage = BitmapFactory.decodeResource(
-                                        resources,
-                                        iconRes
-                                    ),
+                                    weatherImage = iconRes,
                                     tempMin = (weatherForCity[0].temp - 274).toInt(),
                                     tempMax = (weatherForCity[0].temp - 273).toInt()
                                 )
 
-                                if (cityChoose !in cities) {
+                                if (cities.find { it.id == cityChoose.id } == null) {
                                     cities.add(cityChoose)
                                 }
 

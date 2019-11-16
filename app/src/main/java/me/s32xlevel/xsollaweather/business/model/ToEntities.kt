@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 data class CityChoose(
     val id: Int,
     val name: String,
-    val weatherImage: Bitmap,
+    val weatherImage: Int,
     val tempMin: Int,
     val tempMax: Int
 )
