@@ -1,28 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/city_detail_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@android:color/white"
-    tools:context=".ui.fragment.CityDetailFragment">
+    android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/dates_rv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/standart_36dp"
-        android:layout_marginTop="@dimen/standart_8dp"
-        tools:itemCount="1"
-        tools:listitem="@layout/date_item" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/weather_rv"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/standart_8dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:itemCount="5"
-        tools:listitem="@layout/weather_item" />
-</LinearLayout>
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        tools:context=".ui.fragment.CityDetailFragment">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/dates_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standart_36dp"
+            android:layout_marginTop="@dimen/standart_8dp"
+            tools:itemCount="1"
+            tools:listitem="@layout/date_item" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/weather_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/standart_8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="5"
+            tools:listitem="@layout/weather_item" />
+    </LinearLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

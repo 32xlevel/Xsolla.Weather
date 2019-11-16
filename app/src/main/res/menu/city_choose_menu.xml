@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/app_bar_update"
-        android:icon="@drawable/ic_update"
-        android:title="@string/update_hint_menu"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/app_bar_add"
         android:icon="@drawable/ic_add"
         android:title="@string/add_hint_menu"
