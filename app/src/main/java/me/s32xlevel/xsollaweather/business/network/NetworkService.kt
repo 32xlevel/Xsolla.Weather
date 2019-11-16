@@ -1,6 +1,9 @@
 package me.s32xlevel.xsollaweather.business.network
 
+import android.content.Context
+import android.net.ConnectivityManager
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.google.gson.GsonBuilder
 import me.s32xlevel.xsollaweather.R
 import me.s32xlevel.xsollaweather.util.LockManager
@@ -68,4 +71,8 @@ class CallbackImpl<T>(
         fragment.showToast(R.string.network_error)
         onFailure.invoke()
     }
+}
+
+fun FragmentActivity.checkInternetConnection(): Boolean {
+    return (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).allNetworks.isNotEmpty()
 }
