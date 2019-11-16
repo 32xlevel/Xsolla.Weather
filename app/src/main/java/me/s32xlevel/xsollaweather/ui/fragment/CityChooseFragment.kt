@@ -36,7 +36,6 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
         configureToolbar()
     }
 
-    // TODO: Update --> Проблемы с инетом --> баг
     override fun onResume() {
         super.onResume()
         if (cities.isNotEmpty()) {
@@ -78,10 +77,11 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
             cities_empty_tv.visibility = View.VISIBLE
         } else {
             savedCities.forEach { city ->
+                val weatherForCity = weatherRepository.findAllByCityId(city.id).weathers
                 api.getForecast5day3hours(city.id)
                     .enqueue(asyncCall(
                         onSuccess = { weatherResponse ->
-                            if (weatherRepository.findAllByCityId(city.id).weathers.isNotEmpty()) {
+                            if (weatherForCity.isNotEmpty()) {
                                 weatherRepository.clearById(city.id)
                             }
 
@@ -93,7 +93,10 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
                                 CityChoose(
                                     id = city.id,
                                     name = city.name,
-                                    weatherImage = BitmapFactory.decodeResource(resources, iconRes),
+                                    weatherImage = BitmapFactory.decodeResource(
+                                        resources,
+                                        iconRes
+                                    ),
                                     tempMin = (weather.list[0].main.tempMin - 273).toInt(),
                                     tempMax = (weather.list[0].main.tempMax - 273).toInt()
                                 )
@@ -102,10 +105,29 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
                             recyclerAdapter.notifyDataSetChanged()
                         },
                         onFailure = {
-                            if (weatherRepository.findAllByCityId(city.id).weathers.isEmpty()) {
+                            if (weatherForCity.isEmpty()) {
                                 showErrorBanner {
                                     changeFragment(newInstance(), cleanStack = true)
                                 }
+                            } else {
+                                val iconRes =
+                                    WeatherUtil.getWeatherImageResourceFromDescription(weatherForCity[0].description)
+                                val cityChoose = CityChoose(
+                                    id = city.id,
+                                    name = city.name,
+                                    weatherImage = BitmapFactory.decodeResource(
+                                        resources,
+                                        iconRes
+                                    ),
+                                    tempMin = (weatherForCity[0].temp - 274).toInt(),
+                                    tempMax = (weatherForCity[0].temp - 273).toInt()
+                                )
+
+                                if (cityChoose !in cities) {
+                                    cities.add(cityChoose)
+                                }
+
+                                recyclerAdapter.notifyDataSetChanged()
                             }
                         }
                     ))
@@ -129,7 +151,7 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose) {
                             cityRepository.delete(it.id)
                             cities.remove(it)
 
-                            if(cityRepository.getAllSaved().isEmpty()) {
+                            if (cityRepository.getAllSaved().isEmpty()) {
                                 cities_empty_tv.visibility = View.VISIBLE
                                 context?.setToPreferences(PreferencesManager.SAVED_CITY, -1)
                             }

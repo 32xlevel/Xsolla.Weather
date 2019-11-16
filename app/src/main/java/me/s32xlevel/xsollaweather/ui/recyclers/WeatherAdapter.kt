@@ -11,8 +11,8 @@ import me.s32xlevel.xsollaweather.R
 import me.s32xlevel.xsollaweather.business.model.WeatherEntity
 import me.s32xlevel.xsollaweather.util.WeatherUtil
 
-class WeatherRecyclerAdapter(private val weathers: List<WeatherEntity>) :
-    RecyclerView.Adapter<WeatherRecyclerAdapter.WeatherViewHolder>() {
+class WeatherAdapter(private val weathers: List<WeatherEntity>) :
+    RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         WeatherViewHolder(
