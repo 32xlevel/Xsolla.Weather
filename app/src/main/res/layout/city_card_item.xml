@@ -5,6 +5,8 @@
     style="@style/Ripple"
     android:layout_width="@dimen/card_size"
     android:layout_height="@dimen/card_size"
+    android:layout_marginStart="24dp"
+    android:layout_marginBottom="@dimen/standart_8dp"
     app:cardCornerRadius="@dimen/standart_8dp"
     app:cardElevation="@dimen/cardview_default_radius">
 

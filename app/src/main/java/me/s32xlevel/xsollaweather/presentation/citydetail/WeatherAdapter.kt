@@ -26,7 +26,8 @@ class WeatherAdapter(private val weathers: List<WeatherEntity>) :
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {
         with(holder.itemView) {
-            weather_time.text = weathers[position].dateTxt.split(" ")[1]
+            val time = weathers[position].dateTxt.split(" ")[1].split(":")
+            weather_time.text = "${time[0]}:${time[1]}"
             weather_image.setImageBitmap(BitmapFactory.decodeResource(resources,
                 WeatherUtil.getWeatherImageResourceFromDescription(weathers[position].description)))
             weather_temp.text = "${(weathers[position].temp - 273).toInt()}°"

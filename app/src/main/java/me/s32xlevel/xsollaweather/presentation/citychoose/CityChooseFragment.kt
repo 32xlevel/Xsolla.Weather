@@ -17,7 +17,6 @@ import me.s32xlevel.xsollaweather.business.network.asyncCall
 import me.s32xlevel.xsollaweather.presentation.BaseFragment
 import me.s32xlevel.xsollaweather.presentation.addcity.AddCityFragment
 import me.s32xlevel.xsollaweather.presentation.citydetail.CityDetailFragment
-import me.s32xlevel.xsollaweather.presentation.util.GridSpacesItemDecoration
 import me.s32xlevel.xsollaweather.util.ErrorBannerManager.showErrorBanner
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.setToPreferences
@@ -108,7 +107,6 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose),
     private fun configureRecycler() {
         with(cities_rv) {
             layoutManager = GridLayoutManager(context, 2)
-            addItemDecoration(GridSpacesItemDecoration(8))
             adapter = recyclerAdapter.apply {
                 setOnCityClickListener { presenter.onCityClickListener(it) }
                 setOnCityLongClickListener {

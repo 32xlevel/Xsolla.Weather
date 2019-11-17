@@ -23,9 +23,7 @@ class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail),
     SwipeRefreshLayout.OnRefreshListener, CityDetailView {
 
     companion object {
-        fun newInstance(): Fragment {
-            return CityDetailFragment()
-        }
+        fun newInstance() = CityDetailFragment()
     }
 
     private val currentCityId: Int by lazy { context?.getIntFromPreferences(PreferencesManager.SAVED_CITY)!! }
@@ -41,6 +39,7 @@ class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         configureToolbar()
+        initRecyclers()
         city_detail_layout.setOnRefreshListener(this)
 
         api.getForecast5day3hours(currentCityId)
@@ -51,8 +50,8 @@ class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail),
                         currentCityId = currentCityId,
                         onEmptyCache = { showErrorBanner { presenter.onErrorBannerBtnClickListener() } },
                         onNotEmptyCache = {
-                            configureRecyclerForDates()
-                            configureRecyclerForWeather()
+                            configureAdapterForDates()
+                            configureAdapterForWeather()
                         }
                     )
                 }
@@ -83,11 +82,23 @@ class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail),
         city_detail_layout.isRefreshing = false
     }
 
+    private fun initRecyclers() {
+        with(dates_rv) {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            addItemDecoration(EqualSpacingDates(8))
+        }
+
+        with(weather_rv) {
+            layoutManager = LinearLayoutManager(context)
+            addItemDecoration(CustomLinearDividerItemDecoration(drawBeforeFirst = true, drawAfterLast = true))
+        }
+    }
+
     private fun onSuccessCall(weather: Weather) {
         presenter.onNeedUpdateCache(currentCityId, weather)
         presenter.onNeedUpdateSelectedDay(weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt)
-        configureRecyclerForDates()
-        configureRecyclerForWeather()
+        configureAdapterForDates()
+        configureAdapterForWeather()
     }
 
     private fun configureToolbar() {
@@ -96,24 +107,17 @@ class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail),
         setHasOptionsMenu(true)
     }
 
-    private fun configureRecyclerForDates() {
-        with(dates_rv) {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = DatesAdapter(presenter.onNeedDates(currentCityId)).apply {
-                setOnClickListener {
-                    presenter.onNeedUpdateSelectedDay(it)
-                    weather_rv.adapter = WeatherAdapter(presenter.onNeedGetWeatherForCurrentDay(currentCityId, selectedDay))
-                }
+    private fun configureAdapterForDates() {
+        dates_rv.adapter = DatesAdapter(presenter.onNeedDates(currentCityId)).apply {
+            setOnClickListener {
+                presenter.onNeedUpdateSelectedDay(it)
+                weather_rv.adapter = WeatherAdapter(presenter.onNeedGetWeatherForCurrentDay(currentCityId, selectedDay))
             }
         }
     }
 
-    private fun configureRecyclerForWeather() {
-        with(weather_rv) {
-            layoutManager = LinearLayoutManager(context)
-            addItemDecoration(CustomLinearDividerItemDecoration(drawBeforeFirst = true, drawAfterLast = true))
-            adapter = WeatherAdapter(presenter.onNeedGetWeatherForCurrentDay(currentCityId, selectedDay))
-        }
+    private fun configureAdapterForWeather() {
+        weather_rv.adapter = WeatherAdapter(presenter.onNeedGetWeatherForCurrentDay(currentCityId, selectedDay))
     }
 
     override fun onRestartFragment() {
