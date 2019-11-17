@@ -13,8 +13,7 @@ import me.s32xlevel.xsollaweather.presentation.citydetail.CityDetailFragment
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.setToPreferences
 
-class AddCityFragment : BaseFragment(R.layout.fragment_add_city),
-    AddCityView {
+class AddCityFragment : BaseFragment(R.layout.fragment_add_city), AddCityView {
 
     companion object {
         fun newInstance() = AddCityFragment()
