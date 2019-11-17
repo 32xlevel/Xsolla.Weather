@@ -1,4 +1,4 @@
-package me.s32xlevel.xsollaweather.ui.presenter
+package me.s32xlevel.xsollaweather.presentation.addcity
 
 class AddCityPresenter(private var addCityView: AddCityView?) {
 

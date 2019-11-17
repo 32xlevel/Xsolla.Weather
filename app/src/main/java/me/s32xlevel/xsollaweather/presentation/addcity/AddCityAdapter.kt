@@ -1,4 +1,4 @@
-package me.s32xlevel.xsollaweather.ui.recyclers
+package me.s32xlevel.xsollaweather.presentation.addcity
 
 import android.view.LayoutInflater
 import android.view.View

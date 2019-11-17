@@ -1,4 +1,4 @@
-package me.s32xlevel.xsollaweather.ui.fragment
+package me.s32xlevel.xsollaweather.presentation.citydetail
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -13,9 +13,9 @@ import me.s32xlevel.xsollaweather.business.model.Weather
 import me.s32xlevel.xsollaweather.business.model.WeatherEntity
 import me.s32xlevel.xsollaweather.business.network.api
 import me.s32xlevel.xsollaweather.business.network.asyncCall
-import me.s32xlevel.xsollaweather.ui.recyclers.CustomLinearDividerItemDecoration
-import me.s32xlevel.xsollaweather.ui.recyclers.DatesAdapter
-import me.s32xlevel.xsollaweather.ui.recyclers.WeatherAdapter
+import me.s32xlevel.xsollaweather.presentation.BaseFragment
+import me.s32xlevel.xsollaweather.presentation.citychoose.CityChooseFragment
+import me.s32xlevel.xsollaweather.presentation.util.CustomLinearDividerItemDecoration
 import me.s32xlevel.xsollaweather.util.DbUtils
 import me.s32xlevel.xsollaweather.util.ErrorBannerManager.showErrorBanner
 import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
@@ -118,7 +118,10 @@ class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail),
             adapter = DatesAdapter(set).apply {
                 setOnClickListener {
                     selectedDay = it
-                    weather_rv.adapter = WeatherAdapter(getWeatherByCurrentDate())
+                    weather_rv.adapter =
+                        WeatherAdapter(
+                            getWeatherByCurrentDate()
+                        )
                 }
             }
         }
@@ -132,7 +135,9 @@ class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail),
                 drawAfterLast = true
             )
         )
-        weather_rv.adapter = WeatherAdapter(getWeatherByCurrentDate())
+        weather_rv.adapter = WeatherAdapter(
+            getWeatherByCurrentDate()
+        )
     }
 
     private fun getWeatherByCurrentDate(): List<WeatherEntity> {

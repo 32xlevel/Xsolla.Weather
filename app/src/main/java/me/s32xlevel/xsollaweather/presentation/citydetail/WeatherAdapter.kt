@@ -1,4 +1,4 @@
-package me.s32xlevel.xsollaweather.ui.recyclers
+package me.s32xlevel.xsollaweather.presentation.citydetail
 
 import android.annotation.SuppressLint
 import android.graphics.BitmapFactory

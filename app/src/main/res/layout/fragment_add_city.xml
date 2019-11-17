@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.fragment.AddCityFragment">
+    tools:context=".presentation.addcity.AddCityFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/finded_city_rv"

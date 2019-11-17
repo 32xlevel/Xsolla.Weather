@@ -1,4 +1,4 @@
-package me.s32xlevel.xsollaweather.ui.fragment
+package me.s32xlevel.xsollaweather.presentation.addcity
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -8,13 +8,13 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_add_city.*
 import me.s32xlevel.xsollaweather.R
-import me.s32xlevel.xsollaweather.ui.presenter.AddCityPresenter
-import me.s32xlevel.xsollaweather.ui.presenter.AddCityView
-import me.s32xlevel.xsollaweather.ui.recyclers.AddCityAdapter
+import me.s32xlevel.xsollaweather.presentation.BaseFragment
+import me.s32xlevel.xsollaweather.presentation.citydetail.CityDetailFragment
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.setToPreferences
 
-class AddCityFragment : BaseFragment(R.layout.fragment_add_city), AddCityView {
+class AddCityFragment : BaseFragment(R.layout.fragment_add_city),
+    AddCityView {
 
     companion object {
         fun newInstance() = AddCityFragment()
@@ -44,7 +44,7 @@ class AddCityFragment : BaseFragment(R.layout.fragment_add_city), AddCityView {
     }
 
     private fun configureToolbar() {
-        (activity as AppCompatActivity).supportActionBar?.title = ""
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.fragment_add_title)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setHasOptionsMenu(true)
     }

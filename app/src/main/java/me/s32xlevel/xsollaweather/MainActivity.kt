@@ -9,8 +9,8 @@ import android.view.View
 import android.view.WindowManager
 import androidx.annotation.UiThread
 import kotlinx.android.synthetic.main.activity_main.*
-import me.s32xlevel.xsollaweather.ui.fragment.CityChooseFragment
-import me.s32xlevel.xsollaweather.ui.fragment.CityDetailFragment
+import me.s32xlevel.xsollaweather.presentation.citychoose.CityChooseFragment
+import me.s32xlevel.xsollaweather.presentation.citydetail.CityDetailFragment
 import me.s32xlevel.xsollaweather.util.LockCallback
 import me.s32xlevel.xsollaweather.util.LockManager
 import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment

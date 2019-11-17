@@ -1,4 +1,4 @@
-package me.s32xlevel.xsollaweather.ui.recyclers
+package me.s32xlevel.xsollaweather.presentation.util
 
 import android.content.res.Resources
 import android.graphics.Rect
@@ -24,7 +24,13 @@ class GridSpacesItemDecoration(private val spaceInDp: Int) : RecyclerView.ItemDe
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        outRect.left = dpToPx(spaceInDp)
-        outRect.bottom = dpToPx(spaceInDp)
+        outRect.left =
+            dpToPx(
+                spaceInDp
+            )
+        outRect.bottom =
+            dpToPx(
+                spaceInDp
+            )
     }
 }

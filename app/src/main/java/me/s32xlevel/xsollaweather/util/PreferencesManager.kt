@@ -5,6 +5,7 @@ import android.content.Context
 object PreferencesManager {
     const val LAST_NETWORK_CONNECT = "LastNetworkConnect"
     const val SAVED_CITY = "SavedCity"
+    const val EMPTY_VALUE = -1
 
     fun Context.setToPreferences(key: String, value: Long) {
         getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putLong(key, value).apply()

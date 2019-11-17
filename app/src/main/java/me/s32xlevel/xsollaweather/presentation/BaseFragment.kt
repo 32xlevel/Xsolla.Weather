@@ -1,4 +1,4 @@
-package me.s32xlevel.xsollaweather.ui.fragment
+package me.s32xlevel.xsollaweather.presentation
 
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment

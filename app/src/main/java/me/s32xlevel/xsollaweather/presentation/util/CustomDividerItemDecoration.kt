@@ -1,4 +1,4 @@
-package me.s32xlevel.xsollaweather.ui.recyclers
+package me.s32xlevel.xsollaweather.presentation.util
 
 import android.content.res.Resources
 import android.graphics.Canvas
@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 class CustomLinearDividerItemDecoration(
     @ColorInt
     dividerColor: Int = Color.LTGRAY,
-    private val dividerLineWidthPx: Int = dpToPx(0.7),
+    private val dividerLineWidthPx: Int = dpToPx(
+        0.7
+    ),
     private val linePaddingLeftPx: Int = 0,
     private val linePaddingRightPx: Int = 0,
     val drawBeforeFirst: Boolean = false,
