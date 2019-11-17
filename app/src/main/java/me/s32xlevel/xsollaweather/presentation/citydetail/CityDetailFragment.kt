@@ -10,38 +10,17 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.android.synthetic.main.fragment_city_detail.*
 import me.s32xlevel.xsollaweather.R
 import me.s32xlevel.xsollaweather.business.model.Weather
-import me.s32xlevel.xsollaweather.business.model.WeatherEntity
 import me.s32xlevel.xsollaweather.business.network.api
 import me.s32xlevel.xsollaweather.business.network.asyncCall
 import me.s32xlevel.xsollaweather.presentation.BaseFragment
 import me.s32xlevel.xsollaweather.presentation.citychoose.CityChooseFragment
 import me.s32xlevel.xsollaweather.presentation.util.CustomLinearDividerItemDecoration
-import me.s32xlevel.xsollaweather.util.DbUtils
 import me.s32xlevel.xsollaweather.util.ErrorBannerManager.showErrorBanner
-import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.getIntFromPreferences
 
 class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail),
-    SwipeRefreshLayout.OnRefreshListener {
-
-    override fun onRefresh() {
-        api.getForecast5day3hours(currentCityId)
-            .enqueue(asyncCall(
-                onSuccess = {
-                    onSuccessCall(it.body()!!)
-                },
-                onFailure = {
-                    if (weatherRepository.findAllByCityId(currentCityId).weathers.isEmpty()) {
-                        showErrorBanner {
-                            changeFragment(newInstance(), cleanStack = true)
-                        }
-                    }
-                }
-            ))
-
-        city_detail_layout.isRefreshing = false
-    }
+    SwipeRefreshLayout.OnRefreshListener, CityDetailView {
 
     companion object {
         fun newInstance(): Fragment {
@@ -53,27 +32,29 @@ class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail),
 
     private lateinit var selectedDay: String
 
+    private lateinit var presenter: CityDetailPresenter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        presenter = CityDetailPresenter(this, cityRepository, weatherRepository)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         configureToolbar()
         city_detail_layout.setOnRefreshListener(this)
 
         api.getForecast5day3hours(currentCityId)
             .enqueue(asyncCall(
-                onSuccess = {
-                    onSuccessCall(it.body()!!)
-                },
+                onSuccess = { onSuccessCall(it.body()!!) },
                 onFailure = {
-                    val cityWeatherInDb = weatherRepository.findAllByCityId(currentCityId)
-                    if (cityWeatherInDb.weathers.isEmpty()) {
-                        showErrorBanner {
-                            changeFragment(newInstance(), cleanStack = true)
+                    presenter.onFailureCall(
+                        currentCityId = currentCityId,
+                        onEmptyCache = { showErrorBanner { presenter.onErrorBannerBtnClickListener() } },
+                        onNotEmptyCache = {
+                            configureRecyclerForDates()
+                            configureRecyclerForWeather()
                         }
-                    } else {
-                        selectedDay =
-                            weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt
-                        configureRecyclerForDates()
-                        configureRecyclerForWeather()
-                    }
+                    )
                 }
             ))
     }
@@ -81,77 +62,74 @@ class CityDetailFragment : BaseFragment(R.layout.fragment_city_detail),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                activity?.changeFragment(CityChooseFragment.newInstance(), cleanStack = true)
+                presenter.onBackPressed()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+    override fun onRefresh() {
+        api.getForecast5day3hours(currentCityId)
+            .enqueue(asyncCall(
+                onSuccess = { onSuccessCall(it.body()!!) },
+                onFailure = {
+                    presenter.onFailureCall(
+                        currentCityId,
+                        onEmptyCache = { showErrorBanner { presenter.onErrorBannerBtnClickListener() } })
+                }
+            ))
+
+        city_detail_layout.isRefreshing = false
+    }
+
     private fun onSuccessCall(weather: Weather) {
-        weatherRepository.clearById(currentCityId)
-        DbUtils.saveWeatherToDb(weather)
-        selectedDay =
-            weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt
+        presenter.onNeedUpdateCache(currentCityId, weather)
+        presenter.onNeedUpdateSelectedDay(weatherRepository.findAllByCityId(currentCityId).weathers[0].dateTxt)
         configureRecyclerForDates()
         configureRecyclerForWeather()
     }
 
     private fun configureToolbar() {
-        val city = cityRepository.findById(currentCityId)
-        with((activity as AppCompatActivity).supportActionBar!!) {
-            title = city.name
-            setDisplayHomeAsUpEnabled(true)
-        }
+        (activity as AppCompatActivity).supportActionBar?.title = presenter.onNeedCityName(currentCityId)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setHasOptionsMenu(true)
     }
 
     private fun configureRecyclerForDates() {
-        val weathers = weatherRepository.findAllByCityId(currentCityId).weathers
-        val set = mutableSetOf<String>()
-        for (weather in weathers) {
-            set.add(weather.dateTxt.split(" ")[0])
-        }
-
         with(dates_rv) {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = DatesAdapter(set).apply {
+            adapter = DatesAdapter(presenter.onNeedDates(currentCityId)).apply {
                 setOnClickListener {
-                    selectedDay = it
-                    weather_rv.adapter =
-                        WeatherAdapter(
-                            getWeatherByCurrentDate()
-                        )
+                    presenter.onNeedUpdateSelectedDay(it)
+                    weather_rv.adapter = WeatherAdapter(presenter.onNeedGetWeatherForCurrentDay(currentCityId, selectedDay))
                 }
             }
         }
     }
 
     private fun configureRecyclerForWeather() {
-        weather_rv.layoutManager = LinearLayoutManager(context)
-        weather_rv.addItemDecoration(
-            CustomLinearDividerItemDecoration(
-                drawBeforeFirst = true,
-                drawAfterLast = true
-            )
-        )
-        weather_rv.adapter = WeatherAdapter(
-            getWeatherByCurrentDate()
-        )
+        with(weather_rv) {
+            layoutManager = LinearLayoutManager(context)
+            addItemDecoration(CustomLinearDividerItemDecoration(drawBeforeFirst = true, drawAfterLast = true))
+            adapter = WeatherAdapter(presenter.onNeedGetWeatherForCurrentDay(currentCityId, selectedDay))
+        }
     }
 
-    private fun getWeatherByCurrentDate(): List<WeatherEntity> {
-        val weatherList = weatherRepository.findAllByCityId(currentCityId).weathers
-        val date = selectedDay.split(" ")[0]
+    override fun onRestartFragment() {
+        changeFragment(newInstance(), cleanStack = true)
+    }
 
-        val list = mutableListOf<WeatherEntity>()
+    override fun onBackPressed() {
+        changeFragment(CityChooseFragment.newInstance(), cleanStack = true)
+    }
 
-        for (weatherEntity in weatherList) {
-            if (weatherEntity.dateTxt.contains(date)) {
-                list.add(weatherEntity)
-            }
-        }
+    override fun updateSelectedDay(newValue: String) {
+        selectedDay = newValue
+    }
 
-        return list
+    override fun onDetach() {
+        presenter.detachView()
+        super.onDetach()
     }
 }
