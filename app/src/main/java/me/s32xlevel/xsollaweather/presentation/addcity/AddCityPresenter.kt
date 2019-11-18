@@ -1,6 +1,20 @@
 package me.s32xlevel.xsollaweather.presentation.addcity
 
-class AddCityPresenter(private var addCityView: AddCityView?) {
+import android.text.Editable
+import me.s32xlevel.xsollaweather.business.repository.CityRepository
+
+class AddCityPresenter(
+    private var addCityView: AddCityView?,
+    private val cityRepository: CityRepository
+) {
+
+    fun onFindCity(query: Editable?) {
+        if (query == null || query.isBlank()) {
+            addCityView?.updateAdapterData(cityRepository.getAllNotSaved())
+        } else {
+            addCityView?.updateAdapterData(cityRepository.getAllNotSaved().filter { it.name.contains(query, ignoreCase = true) })
+        }
+    }
 
     fun onBackPressed() {
         addCityView?.goToBack()

@@ -1,5 +1,7 @@
 package me.s32xlevel.xsollaweather.presentation.addcity
 
+import me.s32xlevel.xsollaweather.business.model.CityEntity
+
 interface AddCityView {
     fun goToBack()
 
@@ -8,4 +10,6 @@ interface AddCityView {
     fun saveCityIdToPrefs(id: Int)
 
     fun saveCityIdToDb(id: Int)
+
+    fun updateAdapterData(data: List<CityEntity>)
 }

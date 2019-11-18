@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_add_city.*
 import me.s32xlevel.xsollaweather.R
+import me.s32xlevel.xsollaweather.business.model.CityEntity
 import me.s32xlevel.xsollaweather.presentation.BaseFragment
 import me.s32xlevel.xsollaweather.presentation.citydetail.CityDetailFragment
 import me.s32xlevel.xsollaweather.util.PreferencesManager
@@ -26,7 +27,7 @@ class AddCityFragment : BaseFragment(R.layout.fragment_add_city), AddCityView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter = AddCityPresenter(this)
+        presenter = AddCityPresenter(this, cityRepository)
         cityAdapter = AddCityAdapter()
     }
 
@@ -35,14 +36,7 @@ class AddCityFragment : BaseFragment(R.layout.fragment_add_city), AddCityView {
         configureToolbar()
         configureRecycler()
 
-        search_et.addTextChangedListener(onTextChanged = { text, start, count, after ->
-            if (text == null || text.isBlank()) {
-                cityAdapter.data = cityRepository.getAllNotSaved()
-            } else {
-                val newList = cityAdapter.data.filter { it.name.contains(text, ignoreCase = true) }
-                cityAdapter.data = newList
-            }
-        })
+        search_et.addTextChangedListener { presenter.onFindCity(it) }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -66,6 +60,10 @@ class AddCityFragment : BaseFragment(R.layout.fragment_add_city), AddCityView {
             addItemDecoration(DividerItemDecoration(context, RecyclerView.VERTICAL))
             adapter = cityAdapter.apply { setOnClickListener { presenter.onCityClickListener(it) } }
         }
+    }
+
+    override fun updateAdapterData(data: List<CityEntity>) {
+        cityAdapter.data = data
     }
 
     override fun saveCityIdToPrefs(id: Int) {
