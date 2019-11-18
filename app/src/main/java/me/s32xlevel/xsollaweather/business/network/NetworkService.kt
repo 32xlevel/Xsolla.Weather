@@ -60,7 +60,6 @@ class CallbackImpl<T>(
 
         when (response.code()) {
             200 -> {
-                fragment.context?.setToPreferences(PreferencesManager.LAST_NETWORK_CONNECT, System.currentTimeMillis())
                 onSuccess.invoke(response)
             }
         }

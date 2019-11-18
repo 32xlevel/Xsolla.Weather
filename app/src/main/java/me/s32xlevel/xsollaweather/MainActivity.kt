@@ -1,13 +1,11 @@
 package me.s32xlevel.xsollaweather
 
-import android.content.Context
-import android.net.ConnectivityManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.view.WindowManager
 import androidx.annotation.UiThread
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import me.s32xlevel.xsollaweather.presentation.citychoose.CityChooseFragment
 import me.s32xlevel.xsollaweather.presentation.citydetail.CityDetailFragment
@@ -16,8 +14,6 @@ import me.s32xlevel.xsollaweather.util.LockManager
 import me.s32xlevel.xsollaweather.util.NavigationManager.changeFragment
 import me.s32xlevel.xsollaweather.util.PreferencesManager
 import me.s32xlevel.xsollaweather.util.PreferencesManager.getIntFromPreferences
-import me.s32xlevel.xsollaweather.util.PreferencesManager.getLongFromPreferences
-import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), LockCallback {
 
@@ -26,15 +22,6 @@ class MainActivity : AppCompatActivity(), LockCallback {
         setContentView(R.layout.activity_main)
 
         Handler().postDelayed({ xsolla_screen.animate().setDuration(400).alpha(0f) }, 2000)
-
-        // Если есть интернет-соединение и с момента последнего запроса данных прошло больше 2 часов,
-        // то удаляем данные из базы
-        if ((getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).allNetworks.isNotEmpty()) {
-            val lastConnect = getLongFromPreferences(PreferencesManager.LAST_NETWORK_CONNECT)
-            if (lastConnect != -1L && System.currentTimeMillis() - lastConnect > TimeUnit.HOURS.toMillis(2)) {
-                App.getInstance().getDatabase().weatherRepository().clearAll()
-            }
-        }
 
         if (getIntFromPreferences(PreferencesManager.SAVED_CITY) == -1) {
             changeFragment(CityChooseFragment.newInstance())

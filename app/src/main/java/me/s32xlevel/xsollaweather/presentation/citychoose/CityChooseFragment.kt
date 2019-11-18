@@ -113,7 +113,7 @@ class CityChooseFragment : BaseFragment(R.layout.fragment_city_choose),
                     AlertDialog.Builder(context)
                         .setTitle(getString(R.string.fragment_choose_delete_city, it.name))
                         .setPositiveButton(getString(R.string.fragment_choose_yes)) { _, _ ->
-                            presenter.onCityLongClickListener(it)
+                            presenter.onCityLongClickListener(it, context)
                             notifyDataSetChanged()
                         }
                         .setNegativeButton(getString(R.string.fragment_choose_no)) { dialog, _ -> dialog.dismiss() }

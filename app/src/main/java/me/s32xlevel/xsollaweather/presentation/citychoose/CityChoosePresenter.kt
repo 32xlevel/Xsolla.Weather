@@ -1,5 +1,6 @@
 package me.s32xlevel.xsollaweather.presentation.citychoose
 
+import android.content.Context
 import me.s32xlevel.xsollaweather.business.model.CityChoose
 import me.s32xlevel.xsollaweather.business.model.CityEntity
 import me.s32xlevel.xsollaweather.business.model.Weather
@@ -7,6 +8,8 @@ import me.s32xlevel.xsollaweather.business.model.WeatherEntity
 import me.s32xlevel.xsollaweather.business.repository.CityRepository
 import me.s32xlevel.xsollaweather.business.repository.WeatherRepository
 import me.s32xlevel.xsollaweather.util.DbUtils
+import me.s32xlevel.xsollaweather.util.PreferencesManager
+import me.s32xlevel.xsollaweather.util.PreferencesManager.getIntFromPreferences
 import me.s32xlevel.xsollaweather.util.WeatherUtil.getWeatherImageResourceFromDescription
 
 class CityChoosePresenter(
@@ -62,8 +65,13 @@ class CityChoosePresenter(
         cityChooseView?.goToNextFragment()
     }
 
-    fun onCityLongClickListener(cityChoose: CityChoose) {
+    fun onCityLongClickListener(cityChoose: CityChoose, context: Context?) {
         cityRepository.delete(cityChoose.id)
+
+        if (cityChoose.id == context?.getIntFromPreferences(PreferencesManager.SAVED_CITY)) {
+            cityChooseView?.clearCityFromPrefs()
+        }
+
         cityChooseView?.clearFromAdaptersList(cityChoose)
 
         if (cityRepository.getAllSaved().isEmpty()) {
