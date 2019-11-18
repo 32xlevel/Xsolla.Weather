@@ -7,6 +7,20 @@
     android:orientation="vertical"
     tools:context=".presentation.addcity.AddCityFragment">
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standart_16dp"
+        android:layout_gravity="center">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/search_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/fragment_add_search_hint"
+            android:singleLine="true" />
+    </com.google.android.material.textfield.TextInputLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/finded_city_rv"
         android:layout_marginTop="@dimen/standart_16dp"

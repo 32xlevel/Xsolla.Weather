@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_add_city.*
@@ -21,15 +22,27 @@ class AddCityFragment : BaseFragment(R.layout.fragment_add_city), AddCityView {
 
     private lateinit var presenter: AddCityPresenter
 
+    private lateinit var cityAdapter: AddCityAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter = AddCityPresenter(this)
+        cityAdapter = AddCityAdapter()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         configureToolbar()
         configureRecycler()
+
+        search_et.addTextChangedListener(onTextChanged = { text, start, count, after ->
+            if (text == null || text.isBlank()) {
+                cityAdapter.data = cityRepository.getAllNotSaved()
+            } else {
+                val newList = cityAdapter.data.filter { it.name.contains(text, ignoreCase = true) }
+                cityAdapter.data = newList
+            }
+        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -51,7 +64,7 @@ class AddCityFragment : BaseFragment(R.layout.fragment_add_city), AddCityView {
     private fun configureRecycler() {
         with(finded_city_rv) {
             addItemDecoration(DividerItemDecoration(context, RecyclerView.VERTICAL))
-            adapter = AddCityAdapter().apply { setOnClickListener { presenter.onCityClickListener(it) } }
+            adapter = cityAdapter.apply { setOnClickListener { presenter.onCityClickListener(it) } }
         }
     }
 

@@ -15,4 +15,5 @@
     <string name="fragment_choose_no">Нет</string>
     <string name="fragment_choose_empty_cities">Чтобы смотреть погоду, добавьте хотя бы один город</string>
     <string name="fragment_add_title">Добавить город</string>
+    <string name="fragment_add_search_hint">Поиск города</string>
 </resources>

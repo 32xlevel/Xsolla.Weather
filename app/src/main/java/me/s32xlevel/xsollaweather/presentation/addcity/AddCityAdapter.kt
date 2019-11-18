@@ -10,7 +10,12 @@ import me.s32xlevel.xsollaweather.R
 
 class AddCityAdapter : RecyclerView.Adapter<AddCityAdapter.ViewHolder>() {
     private val cityRepository = App.getInstance().getDatabase().cityRepository()
-    private val data = cityRepository.getAllNotSaved()
+
+    var data = cityRepository.getAllNotSaved()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     private lateinit var onClickListener: (cityId: Int) -> Unit
 
