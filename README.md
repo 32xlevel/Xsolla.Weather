@@ -7,5 +7,6 @@
 
 Стек технологий: Kotlin, Android SDK, Retrofit для работы с API, GSON, Room для работы с SQLite.
 Приложение работает в Offline режиме.   
-![Схема работы](https://i.ibb.co/dPxhbjG/Screenshot-5.png)
-
+![Схема работы](https://i.ibb.co/dPxhbjG/Screenshot-5.png)  
+  
+[Установочный APK файл](https://yadi.sk/d/185XzEK4kR0zbw)
