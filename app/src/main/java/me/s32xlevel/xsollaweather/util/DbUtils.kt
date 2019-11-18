@@ -21,7 +21,7 @@ object DbUtils {
         }
     }
 
-    // TODO: Смена реализации
+    // TODO: Смена реализации для поиска по всем возможным городам
     fun populateDb(db: SupportSQLiteDatabase) {
         insertCity(db, 524901, "Москва", true)
         insertCity(db, 511180, "Пермь", true)
